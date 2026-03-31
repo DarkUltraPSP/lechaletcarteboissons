@@ -132,6 +132,13 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
 .field input:focus{outline:none;border-color:var(--gold)}
 .btn-save-setting{padding:8px 18px;background:var(--gold);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer}
 .setting-hint{font-size:11px;color:#aaa;margin-top:6px}
+.btn-edit{width:26px;height:26px;border-radius:5px;border:none;background:transparent;color:#ccc;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.12s;flex-shrink:0}
+.btn-edit:hover{background:#f0f4ff;color:#4a6a9a}
+.btn-confirm{width:26px;height:26px;border-radius:5px;border:none;background:transparent;color:#ccc;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.12s;flex-shrink:0}
+.btn-confirm:hover{background:#f0fff0;color:#2a7a3b}
+.row-editing{background:#fffef5 !important}
+.row-static{font-size:14px;font-weight:500;color:var(--text);padding:2px 0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-static-desc{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -416,6 +423,79 @@ function makeCard2(title, extraHead = '') {
   return { card: c, body: b };
 }
 
+// ══ EDITABLE ROW BUILDER ══
+// Crée une ligne avec bouton crayon pour éditer nom + desc + prix
+function makeEditableRow(item, cols, onDelete, onToggle, extraFields=[]) {
+  const row = makeRow(cols, !item.active);
+
+  // Zone nom (statique ou input selon mode)
+  const nameWrap = document.createElement('div');
+  nameWrap.style.cssText = 'display:flex;flex-direction:column;justify-content:center;min-width:0;overflow:hidden';
+  const nameStatic = document.createElement('div');
+  nameStatic.className = 'row-static'; nameStatic.textContent = item.name;
+  const descStatic = document.createElement('div');
+  descStatic.className = 'row-static-desc'; descStatic.textContent = item.desc || '';
+  descStatic.style.display = item.desc ? 'block' : 'none';
+  nameWrap.appendChild(nameStatic); nameWrap.appendChild(descStatic);
+
+  // Inputs (cachés par défaut)
+  const nameInp = document.createElement('input'); nameInp.className = 'inp inp-wide'; nameInp.value = item.name; nameInp.style.display = 'none';
+  const descInp = document.createElement('input'); descInp.className = 'inp inp-wide'; descInp.value = item.desc || ''; descInp.placeholder = 'Description…'; descInp.style.display = 'none'; descInp.style.marginTop = '4px';
+
+  nameWrap.appendChild(nameInp); nameWrap.appendChild(descInp);
+
+  let editing = false;
+
+  const btnEdit = document.createElement('button'); btnEdit.className = 'btn-edit'; btnEdit.title = 'Modifier'; btnEdit.textContent = '✏️';
+  const btnConfirm = document.createElement('button'); btnConfirm.className = 'btn-confirm'; btnConfirm.title = 'Valider'; btnConfirm.textContent = '✓'; btnConfirm.style.display = 'none';
+
+  function enterEdit() {
+    editing = true;
+    nameStatic.style.display = 'none'; descStatic.style.display = 'none';
+    nameInp.style.display = 'block'; descInp.style.display = 'block';
+    btnEdit.style.display = 'none'; btnConfirm.style.display = 'flex';
+    row.classList.add('row-editing');
+    // Mettre aussi les extraFields en mode edit
+    extraFields.forEach(f => { if(f.static) f.static.style.display='none'; if(f.input) f.input.style.display='block'; });
+    nameInp.focus();
+  }
+
+  function confirmEdit() {
+    editing = false;
+    item.name = nameInp.value.trim() || item.name;
+    item.desc = descInp.value.trim();
+    nameStatic.textContent = item.name;
+    descStatic.textContent = item.desc;
+    descStatic.style.display = item.desc ? 'block' : 'none';
+    nameInp.style.display = 'none'; descInp.style.display = 'none';
+    nameStatic.style.display = 'block';
+    btnEdit.style.display = 'flex'; btnConfirm.style.display = 'none';
+    row.classList.remove('row-editing');
+    extraFields.forEach(f => { if(f.static) f.static.style.display='block'; if(f.input) f.input.style.display='none'; });
+    scheduleSave(`"${item.name}" modifié`);
+  }
+
+  btnEdit.onclick = enterEdit;
+  btnConfirm.onclick = confirmEdit;
+  nameInp.addEventListener('keydown', e => { if(e.key === 'Enter') confirmEdit(); if(e.key === 'Escape') { nameInp.value = item.name; descInp.value = item.desc||''; confirmEdit(); } });
+
+  // Grouper crayon + coche dans une seule cellule
+  const editWrap = document.createElement('div');
+  editWrap.style.cssText = 'display:flex;align-items:center;justify-content:center;width:26px';
+  editWrap.appendChild(btnEdit);
+  editWrap.appendChild(btnConfirm);
+
+  const tg = makeToggle(item.active, onToggle);
+  const db = makeDelBtn(onDelete);
+
+  row.appendChild(nameWrap);
+  extraFields.forEach(f => row.appendChild(f.wrap));
+  row.appendChild(editWrap);
+  row.appendChild(tg);
+  row.appendChild(db);
+  return row;
+}
+
 // ══ DASHBOARD ══
 function renderDashboard() {
   let total = 0, active = 0;
@@ -513,13 +593,20 @@ function renderCatPage(cat) {
 function buildSimpleCard(cat) {
   const { card, body } = makeCard2(cat.label);
   (cat.items || []).forEach(item => {
-    const row = makeRow('1fr 78px 34px 26px', !item.active);
-    const nd = document.createElement('div');
-    nd.innerHTML = `<div class="row-name">${item.name}</div>${item.desc ? `<div class="row-desc">${item.desc}</div>` : ''}`;
-    const pi = makePriceInput(item.price, v => { item.price = v; scheduleSave(`Prix "${item.name}" modifié`); });
-    const tg = makeToggle(item.active, v => { item.active = v; renderCatPage(cat); scheduleSave(`"${item.name}" ${v ? 'activé' : 'masqué'}`); });
-    const db = makeDelBtn(() => { if (!confirm(`Supprimer "${item.name}" ?`)) return; cat.items = cat.items.filter(i => i !== item); renderCatPage(cat); scheduleSave(`"${item.name}" supprimé`); });
-    row.appendChild(nd); row.appendChild(pi); row.appendChild(tg); row.appendChild(db); body.appendChild(row);
+    // Prix : static + input
+    const priceStatic = document.createElement('div'); priceStatic.style.cssText = 'font-size:13px;font-weight:500;color:var(--text);text-align:right;min-width:78px';
+    priceStatic.textContent = item.price ? parseFloat(item.price).toFixed(2).replace('.',',')+' €' : '—';
+    const priceInp = document.createElement('input'); priceInp.className = 'inp inp-price'; priceInp.type='number'; priceInp.step='0.5'; priceInp.value=item.price||''; priceInp.style.display='none';
+    priceInp.onchange = () => { item.price = parseFloat(priceInp.value)||0; priceStatic.textContent = parseFloat(item.price).toFixed(2).replace('.',',')+' €'; scheduleSave('Prix modifié'); };
+    const priceWrap = document.createElement('div'); priceWrap.style.cssText='display:flex;align-items:center;justify-content:flex-end;min-width:78px';
+    priceWrap.appendChild(priceStatic); priceWrap.appendChild(priceInp);
+
+    const row = makeEditableRow(item, '1fr 78px 26px 34px 26px',
+      () => { if(!confirm('Supprimer cet article ?')) return; cat.items=cat.items.filter(i=>i!==item); renderCatPage(cat); scheduleSave('Article supprimé'); },
+      v => { item.active=v; renderCatPage(cat); scheduleSave(`Article ${v?'activé':'masqué'}`); },
+      [{ wrap: priceWrap, static: priceStatic, input: priceInp }]
+    );
+    body.appendChild(row);
   });
   body.appendChild(buildAddSimple(cat, () => renderCatPage(cat))); return card;
 }
@@ -527,13 +614,19 @@ function buildSimpleCard(cat) {
 function buildSubsectionCard(cat, sub, si) {
   const { card, body } = makeCard2(sub.label, `<button class="btn-secondary" style="font-size:11px" onclick="deleteSubsection('${cat.id}',${si})">Supprimer</button>`);
   sub.items.forEach(item => {
-    const row = makeRow('1fr 78px 34px 26px', !item.active);
-    const nd = document.createElement('div');
-    nd.innerHTML = `<div class="row-name">${item.name}</div>${item.desc ? `<div class="row-desc">${item.desc}</div>` : ''}`;
-    const pi = makePriceInput(item.price, v => { item.price = v; scheduleSave(`Prix "${item.name}" modifié`); });
-    const tg = makeToggle(item.active, v => { item.active = v; renderCatPage(cat); scheduleSave(`"${item.name}" ${v ? 'activé' : 'masqué'}`); });
-    const db = makeDelBtn(() => { if (!confirm(`Supprimer "${item.name}" ?`)) return; sub.items = sub.items.filter(i => i !== item); renderCatPage(cat); scheduleSave(`"${item.name}" supprimé`); });
-    row.appendChild(nd); row.appendChild(pi); row.appendChild(tg); row.appendChild(db); body.appendChild(row);
+    const priceStatic = document.createElement('div'); priceStatic.style.cssText = 'font-size:13px;font-weight:500;color:var(--text);text-align:right;min-width:78px';
+    priceStatic.textContent = item.price ? parseFloat(item.price).toFixed(2).replace('.',',')+' €' : '—';
+    const priceInp = document.createElement('input'); priceInp.className = 'inp inp-price'; priceInp.type='number'; priceInp.step='0.5'; priceInp.value=item.price||''; priceInp.style.display='none';
+    priceInp.onchange = () => { item.price = parseFloat(priceInp.value)||0; priceStatic.textContent = parseFloat(item.price).toFixed(2).replace('.',',')+' €'; scheduleSave('Prix modifié'); };
+    const priceWrap = document.createElement('div'); priceWrap.style.cssText='display:flex;align-items:center;justify-content:flex-end;min-width:78px';
+    priceWrap.appendChild(priceStatic); priceWrap.appendChild(priceInp);
+
+    const row = makeEditableRow(item, '1fr 78px 26px 34px 26px',
+      () => { if(!confirm('Supprimer cet article ?')) return; sub.items=sub.items.filter(i=>i!==item); renderCatPage(cat); scheduleSave('Article supprimé'); },
+      v => { item.active=v; renderCatPage(cat); scheduleSave(`Article ${v?'activé':'masqué'}`); },
+      [{ wrap: priceWrap, static: priceStatic, input: priceInp }]
+    );
+    body.appendChild(row);
   });
   body.appendChild(buildAddSimple(sub, () => renderCatPage(cat))); return card;
 }
@@ -562,15 +655,23 @@ function buildAddSimple(target, refresh) {
 function buildDoubleCard(cat) {
   const { card, body } = makeCard2(cat.label, `<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:78px;text-align:center">${cat.col1 || 'Prix 1'}</span><span style="min-width:78px;text-align:center">${cat.col2 || 'Prix 2'}</span></div>`);
   (cat.items || []).forEach(item => {
-    const row = makeRow('1fr 78px 78px 34px 26px', !item.active);
-    const nd = document.createElement('div'); nd.innerHTML = `<div class="row-name">${item.name}</div>`;
-    const p1 = document.createElement('input'); p1.className = 'inp inp-price'; p1.type = 'number'; p1.step = '0.1'; p1.value = fmtP(item.price1); p1.placeholder = '—';
-    p1.onchange = () => { item.price1 = parseFloat(p1.value) || null; scheduleSave(`Prix "${item.name}" modifié`); };
-    const p2 = document.createElement('input'); p2.className = 'inp inp-price'; p2.type = 'number'; p2.step = '0.1'; p2.value = fmtP(item.price2); p2.placeholder = '—';
-    p2.onchange = () => { item.price2 = parseFloat(p2.value) || null; scheduleSave(`Prix "${item.name}" modifié`); };
-    const tg = makeToggle(item.active, v => { item.active = v; renderCatPage(cat); scheduleSave(`"${item.name}" ${v ? 'activé' : 'masqué'}`); });
-    const db = makeDelBtn(() => { if (!confirm(`Supprimer "${item.name}" ?`)) return; cat.items = cat.items.filter(i => i !== item); renderCatPage(cat); scheduleSave(`"${item.name}" supprimé`); });
-    row.appendChild(nd); row.appendChild(p1); row.appendChild(p2); row.appendChild(tg); row.appendChild(db); body.appendChild(row);
+    // Double prix : statique + input pour chaque colonne
+    const p1s = document.createElement('div'); p1s.style.cssText='font-size:13px;font-weight:500;text-align:center;min-width:78px'; p1s.textContent=item.price1!=null?parseFloat(item.price1).toFixed(2).replace('.',',')+' €':'—';
+    const p1i = document.createElement('input'); p1i.className='inp inp-price'; p1i.type='number'; p1i.step='0.1'; p1i.value=fmtP(item.price1); p1i.placeholder='—'; p1i.style.display='none';
+    p1i.onchange=()=>{ item.price1=parseFloat(p1i.value)||null; p1s.textContent=item.price1!=null?parseFloat(item.price1).toFixed(2).replace('.',',')+' €':'—'; scheduleSave('Prix modifié'); };
+    const p1w=document.createElement('div'); p1w.style.cssText='display:flex;align-items:center;justify-content:center;min-width:78px'; p1w.appendChild(p1s); p1w.appendChild(p1i);
+
+    const p2s = document.createElement('div'); p2s.style.cssText='font-size:13px;font-weight:500;text-align:center;min-width:78px'; p2s.textContent=item.price2!=null?parseFloat(item.price2).toFixed(2).replace('.',',')+' €':'—';
+    const p2i = document.createElement('input'); p2i.className='inp inp-price'; p2i.type='number'; p2i.step='0.1'; p2i.value=fmtP(item.price2); p2i.placeholder='—'; p2i.style.display='none';
+    p2i.onchange=()=>{ item.price2=parseFloat(p2i.value)||null; p2s.textContent=item.price2!=null?parseFloat(item.price2).toFixed(2).replace('.',',')+' €':'—'; scheduleSave('Prix modifié'); };
+    const p2w=document.createElement('div'); p2w.style.cssText='display:flex;align-items:center;justify-content:center;min-width:78px'; p2w.appendChild(p2s); p2w.appendChild(p2i);
+
+    const row2 = makeEditableRow(item, '1fr 78px 78px 26px 34px 26px',
+      () => { if(!confirm('Supprimer cet article ?')) return; cat.items=cat.items.filter(i=>i!==item); renderCatPage(cat); scheduleSave('Article supprimé'); },
+      v => { item.active=v; renderCatPage(cat); scheduleSave(`Article ${v?'activé':'masqué'}`); },
+      [{wrap:p1w,static:p1s,input:p1i},{wrap:p2w,static:p2s,input:p2i}]
+    );
+    body.appendChild(row2);
   });
   const ni = makeInp('Nom…'); const np1 = makeInp(cat.col1 || 'Prix 1', 'inp inp-price'); np1.type = 'number'; np1.step = '0.1';
   const np2 = makeInp(cat.col2 || 'Prix 2', 'inp inp-price'); np2.type = 'number'; np2.step = '0.1';
@@ -586,13 +687,13 @@ function buildFormuleCard(cat) {
   const { card, body } = makeCard2(cat.label);
   (cat.items || []).forEach(item => {
     const row = makeRow('1fr 1fr 78px 34px 26px', !item.active);
-    const nd = document.createElement('div'); nd.innerHTML = `<div class="row-name">${item.name}</div>`;
+    const ni2 = document.createElement('input'); ni2.className = 'inp inp-wide'; ni2.value = item.name; ni2.onchange = () => { item.name = ni2.value; scheduleSave('Formule renommée'); };
     const di = document.createElement('input'); di.className = 'inp inp-wide'; di.value = item.desc || ''; di.placeholder = 'Description…';
     di.onchange = () => { item.desc = di.value; scheduleSave(`Description "${item.name}" modifiée`); };
     const pi = makePriceInput(item.price, v => { item.price = v; scheduleSave(`Prix "${item.name}" modifié`); });
     const tg = makeToggle(item.active, v => { item.active = v; renderCatPage(cat); scheduleSave(`"${item.name}" ${v ? 'activé' : 'masqué'}`); });
     const db = makeDelBtn(() => { if (!confirm(`Supprimer "${item.name}" ?`)) return; cat.items = cat.items.filter(i => i !== item); renderCatPage(cat); scheduleSave(`"${item.name}" supprimé`); });
-    row.appendChild(nd); row.appendChild(di); row.appendChild(pi); row.appendChild(tg); row.appendChild(db); body.appendChild(row);
+    row.appendChild(ni2); row.appendChild(di); row.appendChild(pi); row.appendChild(tg); row.appendChild(db); body.appendChild(row);
   });
   const ni = makeInp('Nom de la formule…'); const di = makeInp('Description…'); const np = makeInp('Prix', 'inp inp-price'); np.type = 'number'; np.step = '1';
   const ab = makeBtn('+ Ajouter', 'btn-add', () => {
