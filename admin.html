@@ -361,16 +361,25 @@ let SHA = null; // SHA du fichier GitHub (requis pour PUT)
 let TOKEN = ''; // token GitHub (depuis localStorage)
 let HISTORY = JSON.parse(localStorage.getItem('chalet_history')||'[]');
 
+// ══ HASH SHA-256 ══
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
 // ══ LOGIN ══
 async function doLogin(){
   const pwd   = document.getElementById('login-pwd').value;
   const token = document.getElementById('login-token').value.trim();
   const err   = document.getElementById('login-err');
+  const btn   = document.querySelector('.login-btn');
   err.textContent = '';
 
   if(!token){ err.textContent = 'Token GitHub requis.'; return; }
+  if(!pwd)  { err.textContent = 'Mot de passe requis.'; return; }
 
-  // Charger menu.json depuis GitHub
+  btn.textContent = 'Connexion…'; btn.disabled = true;
+
   try {
     const res = await fetch(API, { headers:{ Authorization:'token '+token, Accept:'application/vnd.github.v3+json' }});
     if(!res.ok) throw new Error('Token invalide ou dépôt introuvable ('+res.status+')');
@@ -378,8 +387,9 @@ async function doLogin(){
     SHA = json.sha;
     D   = JSON.parse(atob(json.content.replace(/\n/g,'')));
 
-    // Vérif mot de passe
-    if(pwd !== D.admin_password){ err.textContent = 'Mot de passe incorrect.'; D=null; SHA=null; return; }
+    // Hash le mot de passe saisi et compare au hash stocké
+    const hash = await sha256(pwd);
+    if(hash !== D.admin_password){ err.textContent = 'Mot de passe incorrect.'; D=null; SHA=null; btn.textContent='Connexion'; btn.disabled=false; return; }
 
     TOKEN = token;
     localStorage.setItem('chalet_token', token);
@@ -390,6 +400,7 @@ async function doLogin(){
     initAll();
   } catch(e){
     err.textContent = e.message;
+    btn.textContent = 'Connexion'; btn.disabled = false;
   }
 }
 
@@ -694,12 +705,13 @@ function renderVins(){
 }
 
 // ══ SETTINGS ══
-function changePwd(){
+async function changePwd(){
   const p1=document.getElementById('new-pwd').value;
   const p2=document.getElementById('new-pwd2').value;
   if(!p1){ alert('Mot de passe vide.'); return; }
   if(p1!==p2){ alert('Les mots de passe ne correspondent pas.'); return; }
-  D.admin_password=p1;
+  // Hash avant stockage — le mot de passe en clair ne sera jamais dans menu.json
+  D.admin_password = await sha256(p1);
   document.getElementById('new-pwd').value='';
   document.getElementById('new-pwd2').value='';
   scheduleSave('Mot de passe admin modifié');
