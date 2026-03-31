@@ -1,0 +1,9 @@
+name = "chalet-bar-api"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+account_id = "a6cbee161140a4d3efee849194d61836"
+
+[vars]
+REPO = "DarkUltraPSP/lechaletcarteboissons"
+BRANCH = "main"
+FILE = "menu.json"
