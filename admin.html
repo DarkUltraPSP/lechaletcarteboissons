@@ -385,7 +385,7 @@ async function doLogin(){
     if(!res.ok) throw new Error('Token invalide ou dépôt introuvable ('+res.status+')');
     const json = await res.json();
     SHA = json.sha;
-    D   = JSON.parse(atob(json.content.replace(/\n/g,'')));
+    D   = JSON.parse(decodeURIComponent(atob(json.content.replace(/\n/g,'')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
 
     // Hash le mot de passe saisi et compare au hash stocké
     const hash = await sha256(pwd);
@@ -427,7 +427,7 @@ function scheduleSave(label){
 async function saveNow(label){
   showSaveBar('saving');
   try {
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(D, null, 2))));
+    const content = btoa(encodeURIComponent(JSON.stringify(D, null, 2)).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1)));
     const res = await fetch(API, {
       method: 'PUT',
       headers: { Authorization:'token '+TOKEN, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' },

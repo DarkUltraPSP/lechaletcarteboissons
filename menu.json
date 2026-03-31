@@ -14,7 +14,7 @@
           },
           {
             "id": "f2",
-            "name": "Coca ZÃÂ©ro",
+            "name": "Coca Zéro",
             "active": true,
             "price": 4
           },
@@ -37,7 +37,7 @@
         "items": [
           {
             "id": "f5",
-            "name": "Fuzetea PÃÂªche",
+            "name": "Fuzetea Pêche",
             "active": true,
             "price": 4
           },
@@ -94,7 +94,7 @@
       ]
     },
     "sirop": {
-      "label": "Sirop ÃÂ  l'eau (25 cl)",
+      "label": "Sirop à l'eau (25 cl)",
       "price": 2.5,
       "active": true,
       "flavours": [
@@ -120,18 +120,18 @@
     }
   },
   "pression": {
-    "label": "BiÃÂ¨res Pression",
+    "label": "Bières Pression",
     "items": [
       {
         "id": "p1",
-        "name": "Mont Blanc Ã¢ÂÂ Cristal",
+        "name": "Mont Blanc — Cristal",
         "active": true,
         "price25": 3.8,
         "price50": 7.6
       },
       {
         "id": "p2",
-        "name": "Mont Blanc Ã¢ÂÂ La Verte (au GÃÂ©nÃÂ©pi)",
+        "name": "Mont Blanc — La Verte (au Génépi)",
         "active": true,
         "price25": 4.2,
         "price50": 8,
@@ -139,7 +139,7 @@
       },
       {
         "id": "p3",
-        "name": "BiÃÂ¨re du Moment",
+        "name": "Bière du Moment",
         "active": true,
         "price25": null,
         "price50": null,
@@ -147,7 +147,7 @@
       },
       {
         "id": "p4",
-        "name": "Picon BiÃÂ¨re",
+        "name": "Picon Bière",
         "active": true,
         "price25": 4.2,
         "price50": 8
@@ -161,7 +161,7 @@
       },
       {
         "id": "p6",
-        "name": "PanachÃÂ©",
+        "name": "Panaché",
         "active": true,
         "price25": 3.6,
         "price50": 7
@@ -176,7 +176,7 @@
     ]
   },
   "bouteilles": {
-    "label": "BiÃÂ¨res Bouteilles",
+    "label": "Bières Bouteilles",
     "items": [
       {
         "id": "b1",
@@ -218,7 +218,7 @@
       },
       {
         "id": "v2",
-        "name": "CÃÂ´tes du RhÃÂ´ne",
+        "name": "Côtes du Rhône",
         "active": true,
         "type": "Rouge",
         "price12": 5,
@@ -226,7 +226,7 @@
       },
       {
         "id": "v3",
-        "name": "AlbriÃÂ¨re Viognier",
+        "name": "Albrière Viognier",
         "active": true,
         "type": "Blanc",
         "price12": 4,
@@ -236,21 +236,21 @@
         "id": "v4",
         "name": "Gourmandoise",
         "active": true,
-        "type": "RosÃÂ©",
+        "type": "Rosé",
         "price12": 4,
         "priceBt": 18
       }
     ]
   },
   "aperitifs": {
-    "label": "ApÃÂ©ritifs",
+    "label": "Apéritifs",
     "items": [
       {
         "id": "a1",
         "name": "Ricard",
         "active": true,
         "price": 2.5,
-        "desc": "2 cl Ã¢ÂÂ 5,00 Ã¢ÂÂ¬ pour 4 cl"
+        "desc": "2 cl — 5,00 € pour 4 cl"
       },
       {
         "id": "a2",
@@ -258,11 +258,11 @@
         "active": true,
         "price": 5.5,
         "flavours": [
-          "MÃÂ»re",
+          "Mûre",
           "Cassis",
           "Myrtille",
-          "ChÃÂ¢taigne",
-          "PÃÂªche"
+          "Châtaigne",
+          "Pêche"
         ]
       },
       {
@@ -290,7 +290,7 @@
     "items": [
       {
         "id": "al1",
-        "name": "GÃÂ©nÃÂ©pi (4 cl)",
+        "name": "Génépi (4 cl)",
         "active": true,
         "price": 6
       },
@@ -326,7 +326,7 @@
       },
       {
         "id": "al7",
-        "name": "JÃÂ¤germeister bombe",
+        "name": "Jägermeister bombe",
         "active": true,
         "price": 7
       },
@@ -373,7 +373,7 @@
     "items": [
       {
         "id": "c1",
-        "name": "CafÃÂ©",
+        "name": "Café",
         "active": true,
         "price": 1.5
       }
@@ -394,14 +394,14 @@
         "name": "Terrines au choix",
         "active": true,
         "price": 8,
-        "desc": "Servis avec croÃÂ»tons ÃÂ· Selon arrivage"
+        "desc": "Servis avec croûtons · Selon arrivage"
       },
       {
         "id": "fm3",
         "name": "Planche Tapenades",
         "active": true,
         "price": 7,
-        "desc": "Servie avec croÃÂ»tons",
+        "desc": "Servie avec croûtons",
         "star": true
       }
     ]
@@ -411,7 +411,7 @@
     "items": [
       {
         "id": "fo1",
-        "name": "Formule ApÃÂ©ro Chalet",
+        "name": "Formule Apéro Chalet",
         "active": true,
         "price": 18,
         "desc": "Planche Tapenade + 1 Cocktail"
