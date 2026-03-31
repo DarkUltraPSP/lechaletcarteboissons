@@ -352,9 +352,10 @@
         },
         {
           "id": "al12",
-          "name": "Rhum Havana Club Nature",
+          "name": "Rhum Havana Club Especial",
           "active": true,
-          "price": 4.8
+          "price": 4.8,
+          "desc": ""
         },
         {
           "id": "al13",
