@@ -134,7 +134,7 @@
           "id": "p3",
           "name": "Biere du Moment",
           "active": true,
-          "price1": null,
+          "price1": -0.1,
           "price2": null
         },
         {
