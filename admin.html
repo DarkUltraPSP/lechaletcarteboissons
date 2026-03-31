@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Chalet — Admin</title>
+<style>
+:root{
+  --gold:#B8922A;--gold-l:#D4AC50;--gold-d:#8A6B1F;
+  --dark:#1C130A;--dark2:#1c1c1c;
+  --cream:#F4ECD8;--muted:#8A7355;
+  --bg:#f5f5f3;--white:#fff;--border:#e8e8e8;--border2:#e0e0e0;
+  --text:#1a1a1a;--text2:#555;--text3:#999;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
+
+/* ─ LOGIN ─ */
+#login-screen{
+  position:fixed;inset:0;background:var(--dark);
+  display:flex;align-items:center;justify-content:center;z-index:1000;
+}
+.login-box{
+  background:#241A0C;border:1px solid rgba(184,146,42,0.3);border-radius:12px;
+  padding:40px 36px;width:340px;text-align:center;
+}
+.login-logo{margin-bottom:16px;opacity:0.8}
+.login-title{font-family:'Georgia',serif;font-size:20px;color:var(--gold-l);letter-spacing:0.1em;margin-bottom:4px}
+.login-sub{font-size:11px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:28px}
+.login-field{margin-bottom:12px;text-align:left}
+.login-label{font-size:11px;color:var(--muted);margin-bottom:5px;display:block;letter-spacing:0.1em;text-transform:uppercase}
+.login-input{
+  width:100%;padding:10px 14px;background:#1C130A;border:1px solid rgba(184,146,42,0.25);
+  border-radius:6px;color:var(--cream);font-size:14px;outline:none;
+  transition:border-color 0.15s;
+}
+.login-input:focus{border-color:var(--gold)}
+.login-input::placeholder{color:#5a4020}
+.login-btn{
+  width:100%;margin-top:8px;padding:11px;background:var(--gold);color:#1C130A;
+  border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;
+  transition:background 0.15s;letter-spacing:0.05em;
+}
+.login-btn:hover{background:var(--gold-l)}
+.login-error{color:#e07070;font-size:12px;margin-top:10px;min-height:18px}
+.login-note{font-size:10px;color:#5a4020;margin-top:20px;line-height:1.6}
+
+/* ─ APP ─ */
+#app{display:none}
+.layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+/* Sidebar */
+.sidebar{background:var(--dark2);color:#f0f0f0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-head{padding:18px 18px 14px;border-bottom:1px solid #333}
+.sb-logo{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.sb-title{font-size:16px;font-weight:600;color:#f0f0f0}
+.sb-user{font-size:11px;color:#555;margin-top:2px}
+.nav{padding:10px 0;flex:1}
+.nav-sec{padding:8px 18px 4px;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#555}
+.nav-item{
+  display:flex;align-items:center;gap:9px;padding:8px 18px;
+  font-size:13px;color:#aaa;cursor:pointer;border-left:2px solid transparent;
+  transition:all 0.12s;
+}
+.nav-item:hover{color:#f0f0f0;background:#252525}
+.nav-item.active{color:var(--gold-l);background:#252010;border-left-color:var(--gold)}
+.nav-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:0.5;flex-shrink:0}
+.nav-item.active .nav-dot{opacity:1;background:var(--gold)}
+.sb-foot{padding:14px 18px;border-top:1px solid #333;display:flex;flex-direction:column;gap:8px}
+.btn-preview{
+  width:100%;padding:8px;background:var(--gold);color:#1c1c1c;
+  border:none;border-radius:6px;font-size:12px;font-weight:700;
+  cursor:pointer;transition:background 0.15s;
+}
+.btn-preview:hover{background:var(--gold-l)}
+.btn-logout{
+  width:100%;padding:7px;background:transparent;color:#666;
+  border:1px solid #333;border-radius:6px;font-size:11px;
+  cursor:pointer;transition:all 0.15s;
+}
+.btn-logout:hover{background:#2a2a2a;color:#aaa}
+
+/* Main */
+.main{padding:28px 32px;max-width:860px}
+.pg{display:none}
+.pg.active{display:block}
+.pg-head{margin-bottom:24px}
+.pg-title{font-size:20px;font-weight:600}
+.pg-desc{font-size:13px;color:#777;margin-top:3px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.stat{background:var(--white);border-radius:8px;border:1px solid var(--border);padding:14px}
+.stat-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
+.stat-val{font-size:24px;font-weight:600}
+.stat-sub{font-size:11px;color:#bbb;margin-top:2px}
+
+/* Cards */
+.card{background:var(--white);border-radius:10px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden}
+.card-head{
+  padding:12px 18px;background:#fafafa;border-bottom:1px solid #f0f0f0;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#555}
+.card-body{padding:4px 0}
+
+/* Rows */
+.row{
+  display:grid;align-items:center;padding:9px 18px;
+  border-bottom:1px solid #f8f8f8;gap:8px;transition:background 0.1s;
+}
+.row:last-child{border:none}
+.row:hover{background:#fafafa}
+.row-name{font-size:14px;font-weight:500;color:var(--text)}
+.row-desc{font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row.disabled .row-name{color:#ccc;text-decoration:line-through}
+
+/* Inputs */
+.inp{padding:5px 8px;border:1px solid var(--border2);border-radius:6px;font-size:13px;color:var(--text);background:var(--white);transition:border-color 0.15s}
+.inp:focus{outline:none;border-color:var(--gold)}
+.inp-price{width:78px;text-align:right}
+.inp-wide{flex:1}
+
+/* Toggle */
+.tgl{position:relative;width:34px;height:19px;flex-shrink:0}
+.tgl input{opacity:0;width:0;height:0}
+.tgl-sl{position:absolute;inset:0;background:#ddd;border-radius:20px;cursor:pointer;transition:background 0.2s}
+.tgl-sl::before{content:'';position:absolute;width:13px;height:13px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform 0.2s}
+.tgl input:checked+.tgl-sl{background:var(--gold)}
+.tgl input:checked+.tgl-sl::before{transform:translateX(15px)}
+
+/* Del btn */
+.btn-del{width:26px;height:26px;border-radius:5px;border:none;background:transparent;color:#ccc;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.12s;flex-shrink:0}
+.btn-del:hover{background:#fee;color:#c00}
+
+/* Flavours */
+.flavours{display:flex;flex-wrap:wrap;gap:5px;padding:6px 18px 10px}
+.ftag{display:inline-flex;align-items:center;gap:4px;background:#f0f0ee;border-radius:20px;padding:3px 10px 3px 11px;font-size:12px;color:#444}
+.ftag-rm{width:15px;height:15px;border-radius:50%;background:#ddd;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;color:#888;transition:all 0.1s;flex-shrink:0;line-height:1}
+.ftag-rm:hover{background:#f5c5c5;color:#c00}
+.add-flavour{display:flex;gap:7px;padding:0 18px 10px}
+
+/* Add item row */
+.add-row{display:flex;gap:7px;padding:10px 18px;background:#fafafa;border-top:1px solid #f0f0f0;flex-wrap:wrap;align-items:center}
+
+/* Btn add */
+.btn-add{padding:6px 14px;background:var(--gold);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:background 0.12s;white-space:nowrap}
+.btn-add:hover{background:var(--gold-l)}
+.btn-add-sm{padding:5px 11px;font-size:11px}
+
+/* Save status */
+.save-bar{
+  position:fixed;bottom:20px;right:20px;
+  background:#1a1a1a;color:#fff;padding:9px 16px;border-radius:8px;
+  font-size:13px;font-weight:500;
+  transform:translateY(60px);opacity:0;transition:all 0.25s;
+  z-index:100;display:flex;align-items:center;gap:10px;
+}
+.save-bar.show{transform:translateY(0);opacity:1}
+.save-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.save-ok{color:#7dd47d}
+
+/* Settings page */
+.settings-card{background:var(--white);border-radius:10px;border:1px solid var(--border);padding:24px;margin-bottom:16px}
+.settings-title{font-size:14px;font-weight:600;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #f0f0f0}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em}
+.field-row{display:flex;gap:8px;align-items:center}
+.field input{flex:1;padding:8px 12px;border:1px solid var(--border2);border-radius:6px;font-size:14px;color:var(--text);background:var(--white)}
+.field input:focus{outline:none;border-color:var(--gold)}
+.btn-save-setting{padding:8px 18px;background:var(--gold);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s}
+.btn-save-setting:hover{background:var(--gold-l)}
+.setting-hint{font-size:11px;color:#aaa;margin-top:6px}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="login-screen">
+  <div class="login-box">
+    <svg class="login-logo" width="60" height="44" viewBox="0 0 160 110" fill="none">
+      <path d="M80 8A72 72 0 0 1 152 80" stroke="#B8922A" stroke-width="1.5" fill="none"/>
+      <path d="M8 80A72 72 0 0 1 80 8" stroke="#B8922A" stroke-width="1.5" fill="none"/>
+      <path d="M8 80A72 72 0 0 0 152 80" stroke="#B8922A" stroke-width="1.5" fill="none"/>
+      <polyline points="10,75 35,38 52,55 80,18 108,55 125,38 150,75" stroke="#C9A84C" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+      <polyline points="48,92 80,65 112,92" stroke="#C9A84C" stroke-width="1.5" fill="none"/>
+    </svg>
+    <div class="login-title">Le Chalet</div>
+    <div class="login-sub">Administration</div>
+    <div class="login-field">
+      <label class="login-label">Mot de passe</label>
+      <input class="login-input" type="password" id="login-pwd" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Token GitHub</label>
+      <input class="login-input" type="password" id="login-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Connexion</button>
+    <div class="login-error" id="login-err"></div>
+    <div class="login-note">Le token est stocké uniquement dans votre navigateur.<br>Il ne transit jamais sur un serveur externe.</div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+<div class="layout">
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sb-head">
+    <div class="sb-logo">Le Chalet</div>
+    <div class="sb-title">Back Office</div>
+    <div class="sb-user" id="sb-user"></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-sec">Catalogue</div>
+    <div class="nav-item active" onclick="pg('dashboard')"><span class="nav-dot"></span>Tableau de bord</div>
+    <div class="nav-item" onclick="pg('fraiches')"><span class="nav-dot"></span>Boissons fraiches</div>
+    <div class="nav-item" onclick="pg('pression')"><span class="nav-dot"></span>Bières pression</div>
+    <div class="nav-item" onclick="pg('bouteilles')"><span class="nav-dot"></span>Bières bouteilles</div>
+    <div class="nav-item" onclick="pg('vins')"><span class="nav-dot"></span>Les vins</div>
+    <div class="nav-item" onclick="pg('aperitifs')"><span class="nav-dot"></span>Apéritifs</div>
+    <div class="nav-item" onclick="pg('alcools')"><span class="nav-dot"></span>Alcools &amp; digestifs</div>
+    <div class="nav-item" onclick="pg('chaud')"><span class="nav-dot"></span>Boissons chaudes</div>
+    <div class="nav-item" onclick="pg('faims')"><span class="nav-dot"></span>Petites faims</div>
+    <div class="nav-item" onclick="pg('formules')"><span class="nav-dot"></span>Formules</div>
+    <div class="nav-sec">Réglages</div>
+    <div class="nav-item" onclick="pg('settings')"><span class="nav-dot"></span>Paramètres</div>
+  </nav>
+  <div class="sb-foot">
+    <button class="btn-preview" onclick="window.open('index.html','_blank')">Voir la carte ↗</button>
+    <button class="btn-logout" onclick="logout()">Déconnexion</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+<!-- DASHBOARD -->
+<div class="pg active" id="pg-dashboard">
+  <div class="pg-head"><div class="pg-title">Tableau de bord</div><div class="pg-desc">État de la carte en temps réel</div></div>
+  <div class="stats" id="stats"></div>
+  <div class="card">
+    <div class="card-head"><span class="card-title">Dernières sauvegardes</span></div>
+    <div class="card-body" style="padding:14px 18px;font-size:13px;color:#999" id="history">Aucune sauvegarde encore.</div>
+  </div>
+</div>
+
+<!-- FRAICHES -->
+<div class="pg" id="pg-fraiches">
+  <div class="pg-head"><div class="pg-title">Boissons Fraiches</div></div>
+  <div id="c-fraiches"></div>
+</div>
+
+<!-- PRESSION -->
+<div class="pg" id="pg-pression">
+  <div class="pg-head"><div class="pg-title">Bières Pression</div></div>
+  <div id="c-pression"></div>
+</div>
+
+<!-- BOUTEILLES -->
+<div class="pg" id="pg-bouteilles">
+  <div class="pg-head"><div class="pg-title">Bières Bouteilles</div></div>
+  <div id="c-bouteilles"></div>
+</div>
+
+<!-- VINS -->
+<div class="pg" id="pg-vins">
+  <div class="pg-head"><div class="pg-title">Les Vins</div></div>
+  <div id="c-vins"></div>
+</div>
+
+<!-- APERITIFS -->
+<div class="pg" id="pg-aperitifs">
+  <div class="pg-head"><div class="pg-title">Apéritifs</div></div>
+  <div id="c-aperitifs"></div>
+</div>
+
+<!-- ALCOOLS -->
+<div class="pg" id="pg-alcools">
+  <div class="pg-head"><div class="pg-title">Alcools &amp; Digestifs</div></div>
+  <div id="c-alcools"></div>
+</div>
+
+<!-- CHAUD -->
+<div class="pg" id="pg-chaud">
+  <div class="pg-head"><div class="pg-title">Boissons Chaudes</div></div>
+  <div id="c-chaud"></div>
+</div>
+
+<!-- FAIMS -->
+<div class="pg" id="pg-faims">
+  <div class="pg-head"><div class="pg-title">Petites Faims</div></div>
+  <div id="c-faims"></div>
+</div>
+
+<!-- FORMULES -->
+<div class="pg" id="pg-formules">
+  <div class="pg-head"><div class="pg-title">Formules</div></div>
+  <div id="c-formules"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="pg" id="pg-settings">
+  <div class="pg-head"><div class="pg-title">Paramètres</div><div class="pg-desc">Réglages du back office</div></div>
+
+  <div class="settings-card">
+    <div class="settings-title">Mot de passe admin</div>
+    <div class="field">
+      <label>Nouveau mot de passe</label>
+      <div class="field-row">
+        <input type="password" id="new-pwd" placeholder="Nouveau mot de passe">
+        <input type="password" id="new-pwd2" placeholder="Confirmer">
+        <button class="btn-save-setting" onclick="changePwd()">Modifier</button>
+      </div>
+      <div class="setting-hint">Le mot de passe est stocké dans menu.json et sera demandé à chaque connexion.</div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <div class="settings-title">Token GitHub</div>
+    <div class="field">
+      <label>Token actuel (masqué)</label>
+      <div class="field-row">
+        <input type="password" id="new-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+        <button class="btn-save-setting" onclick="changeToken()">Mettre à jour</button>
+      </div>
+      <div class="setting-hint">Stocké uniquement dans votre navigateur (localStorage). Jamais envoyé ailleurs que vers l'API GitHub.</div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <div class="settings-title">Lien de la carte publique</div>
+    <div class="field">
+      <div style="font-size:14px;padding:10px 14px;background:#f8f8f8;border-radius:6px;border:1px solid #eee;font-family:monospace;color:#444" id="public-url"></div>
+      <div class="setting-hint">Partagez ce lien ou générez un QR code depuis ce lien.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+</div><!-- /app -->
+
+<!-- Save bar -->
+<div class="save-bar" id="save-bar">
+  <div class="save-spinner" id="save-spin"></div>
+  <span id="save-msg">Sauvegarde en cours…</span>
+</div>
+
+<script>
+const REPO   = 'DarkUltraPSP/lechaletcarteboissons';
+const BRANCH = 'main';
+const FILE   = 'menu.json';
+const API    = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
+const PUBLIC = `https://darkultrapsp.github.io/lechaletcarteboissons/`;
+
+let D = null;   // données courantes
+let SHA = null; // SHA du fichier GitHub (requis pour PUT)
+let TOKEN = ''; // token GitHub (depuis localStorage)
+let HISTORY = JSON.parse(localStorage.getItem('chalet_history')||'[]');
+
+// ══ LOGIN ══
+async function doLogin(){
+  const pwd   = document.getElementById('login-pwd').value;
+  const token = document.getElementById('login-token').value.trim();
+  const err   = document.getElementById('login-err');
+  err.textContent = '';
+
+  if(!token){ err.textContent = 'Token GitHub requis.'; return; }
+
+  // Charger menu.json depuis GitHub
+  try {
+    const res = await fetch(API, { headers:{ Authorization:'token '+token, Accept:'application/vnd.github.v3+json' }});
+    if(!res.ok) throw new Error('Token invalide ou dépôt introuvable ('+res.status+')');
+    const json = await res.json();
+    SHA = json.sha;
+    D   = JSON.parse(atob(json.content.replace(/\n/g,'')));
+
+    // Vérif mot de passe
+    if(pwd !== D.admin_password){ err.textContent = 'Mot de passe incorrect.'; D=null; SHA=null; return; }
+
+    TOKEN = token;
+    localStorage.setItem('chalet_token', token);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('sb-user').textContent = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('public-url').textContent = PUBLIC;
+    initAll();
+  } catch(e){
+    err.textContent = e.message;
+  }
+}
+
+// Auto-fill token si déjà enregistré
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('chalet_token');
+  if(saved) document.getElementById('login-token').value = saved;
+  document.getElementById('login-pwd').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  document.getElementById('login-token').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+});
+
+function logout(){
+  localStorage.removeItem('chalet_token');
+  location.reload();
+}
+
+// ══ SAVE TO GITHUB ══
+let saveTimer = null;
+function scheduleSave(label){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>saveNow(label), 1200);
+}
+
+async function saveNow(label){
+  showSaveBar('saving');
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(D, null, 2))));
+    const res = await fetch(API, {
+      method: 'PUT',
+      headers: { Authorization:'token '+TOKEN, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+      body: JSON.stringify({ message: label||'Mise à jour carte', content, sha: SHA, branch: BRANCH })
+    });
+    if(!res.ok){ const j=await res.json(); throw new Error(j.message||res.status); }
+    const j = await res.json();
+    SHA = j.content.sha;
+    const ts = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    HISTORY.unshift({ time:ts, label:label||'Sauvegarde' });
+    if(HISTORY.length>8) HISTORY.pop();
+    localStorage.setItem('chalet_history', JSON.stringify(HISTORY));
+    showSaveBar('ok');
+    renderDashboard();
+  } catch(e){
+    showSaveBar('error', e.message);
+  }
+}
+
+function showSaveBar(state, msg=''){
+  const bar = document.getElementById('save-bar');
+  const spin = document.getElementById('save-spin');
+  const txt  = document.getElementById('save-msg');
+  bar.classList.add('show');
+  if(state==='saving'){ spin.style.display='block'; txt.textContent='Sauvegarde en cours…'; bar.style.background='#1a1a1a'; }
+  else if(state==='ok'){ spin.style.display='none'; txt.innerHTML='<span class="save-ok">✓</span> Sauvegardé sur GitHub'; bar.style.background='#1a3a1a'; setTimeout(()=>bar.classList.remove('show'),2500); }
+  else { spin.style.display='none'; txt.textContent='Erreur : '+msg; bar.style.background='#3a1a1a'; setTimeout(()=>bar.classList.remove('show'),4000); }
+}
+
+// ══ NAVIGATION ══
+function pg(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{ if(n.getAttribute('onclick')?.includes("'"+id+"'")) n.classList.add('active'); });
+}
+
+// ══ HELPERS ══
+function uid(){ return Math.random().toString(36).slice(2,7); }
+function fmtP(p){ return p==null?'':parseFloat(p).toFixed(2); }
+
+function makeToggle(checked, onChange){
+  const l=document.createElement('label'); l.className='tgl';
+  const i=document.createElement('input'); i.type='checkbox'; i.checked=checked;
+  i.onchange=()=>onChange(i.checked);
+  const s=document.createElement('span'); s.className='tgl-sl';
+  l.appendChild(i); l.appendChild(s); return l;
+}
+
+function makeDelBtn(onClick){
+  const b=document.createElement('button'); b.className='btn-del'; b.textContent='×'; b.onclick=onClick; return b;
+}
+
+function makePriceInput(val, onChange, placeholder='0,00'){
+  const i=document.createElement('input'); i.className='inp inp-price'; i.type='number'; i.step='0.5';
+  i.value=fmtP(val); i.placeholder=placeholder;
+  i.onchange=()=>onChange(parseFloat(i.value)||0);
+  return i;
+}
+
+function makeFlavourTag(text, onRemove){
+  const d=document.createElement('div'); d.className='ftag';
+  d.innerHTML=`<span>${text}</span>`;
+  const b=document.createElement('button'); b.className='ftag-rm'; b.textContent='×'; b.onclick=onRemove;
+  d.appendChild(b); return d;
+}
+
+function makeAddFlavourForm(onAdd){
+  const d=document.createElement('div'); d.className='add-flavour';
+  const i=document.createElement('input'); i.className='inp inp-wide'; i.placeholder='Ajouter un goût…';
+  const b=document.createElement('button'); b.className='btn-add btn-add-sm'; b.textContent='+ Goût';
+  b.onclick=()=>{ const v=i.value.trim(); if(v){onAdd(v);i.value='';} };
+  i.addEventListener('keydown',e=>{if(e.key==='Enter')b.click();});
+  d.appendChild(i); d.appendChild(b); return d;
+}
+
+function makeCard(title, extraHead=''){
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<div class="card-head"><span class="card-title">${title}</span>${extraHead}</div>`;
+  const b=document.createElement('div'); b.className='card-body'; c.appendChild(b);
+  return {card:c, body:b};
+}
+
+// Row avec colonnes custom
+function makeRow(cols, disabled=false){
+  const d=document.createElement('div');
+  d.className='row'+(disabled?' disabled':'');
+  d.style.gridTemplateColumns=cols;
+  return d;
+}
+
+// ══ DASHBOARD ══
+function renderDashboard(){
+  let total=0,active=0;
+  const keys=['pression','bouteilles','vins','aperitifs','alcools','chaud','faims','formules'];
+  keys.forEach(k=>{ D[k].items.forEach(i=>{total++;if(i.active)active++;}); });
+  D.fraiches.subsections.forEach(s=>s.items.forEach(i=>{total++;if(i.active)active++;}));
+  ['jus','sirop','diabolo'].forEach(k=>{total++;if(D.fraiches[k].active)active++;});
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="stat-label">Articles</div><div class="stat-val">${total}</div><div class="stat-sub">sur la carte</div></div>
+    <div class="stat"><div class="stat-label">Actifs</div><div class="stat-val" style="color:#2a7a3b">${active}</div><div class="stat-sub">${total-active} masqué(s)</div></div>
+    <div class="stat"><div class="stat-label">Parfums</div><div class="stat-val">${D.fraiches.sirop.flavours.length+D.fraiches.diabolo.flavours.length+D.fraiches.jus.flavours.length}</div><div class="stat-sub">variantes</div></div>
+  `;
+  const h=document.getElementById('history');
+  h.innerHTML = HISTORY.length===0
+    ? '<span style="color:#bbb">Aucune sauvegarde encore.</span>'
+    : HISTORY.map(x=>`<div style="padding:5px 0;border-bottom:1px solid #f8f8f8;display:flex;gap:10px"><span style="color:#bbb;font-size:12px;min-width:55px">${x.time}</span><span>${x.label}</span></div>`).join('');
+}
+
+// ══ FRAICHES ══
+function renderFraiches(){
+  const el=document.getElementById('c-fraiches'); el.innerHTML='';
+
+  D.fraiches.subsections.forEach((sub,si)=>{
+    const {card,body}=makeCard(sub.label);
+    sub.items.forEach(item=>{
+      const row=makeRow('1fr 90px 34px 26px', !item.active);
+      const nd=document.createElement('div');
+      nd.innerHTML=`<div class="row-name">${item.name}</div>`;
+      const pi=makePriceInput(item.price,v=>{item.price=v;scheduleSave(`Prix "${item.name}" modifié`);});
+      const tg=makeToggle(item.active,v=>{item.active=v;renderFraiches();scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
+      const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;sub.items=sub.items.filter(i=>i!==item);renderFraiches();scheduleSave(`"${item.name}" supprimé`);});
+      row.appendChild(nd);row.appendChild(pi);row.appendChild(tg);row.appendChild(db);
+      body.appendChild(row);
+    });
+    // Add
+    const ar=document.createElement('div'); ar.className='add-row';
+    const ni=document.createElement('input'); ni.className='inp inp-wide'; ni.placeholder='Nouveau soda…';
+    const np=document.createElement('input'); np.className='inp inp-price'; np.type='number'; np.step='0.5'; np.placeholder='4,00';
+    const ab=document.createElement('button'); ab.className='btn-add'; ab.textContent='+ Ajouter';
+    ab.onclick=()=>{
+      const n=ni.value.trim(); if(!n)return;
+      sub.items.push({id:'f'+uid(),name:n,active:true,price:parseFloat(np.value)||4});
+      ni.value='';np.value='';renderFraiches();scheduleSave(`"${n}" ajouté`);
+    };
+    ni.addEventListener('keydown',e=>{if(e.key==='Enter')ab.click();});
+    ar.appendChild(ni);ar.appendChild(np);ar.appendChild(ab);
+    body.appendChild(ar); el.appendChild(card);
+  });
+
+  // Jus / Sirop / Diabolo
+  ['jus','sirop','diabolo'].forEach(key=>{
+    const obj=D.fraiches[key];
+    const {card,body}=makeCard(obj.label);
+    const row=makeRow('1fr 90px 34px 26px',!obj.active);
+    const nd=document.createElement('div');
+    nd.innerHTML=`<div class="row-name">${obj.label}</div><div class="row-desc">${obj.flavours.join(' · ')}</div>`;
+    const pi=makePriceInput(obj.price,v=>{obj.price=v;scheduleSave(`Prix ${obj.label} modifié`);});
+    const tg=makeToggle(obj.active,v=>{obj.active=v;renderFraiches();scheduleSave(`${obj.label} ${v?'activé':'masqué'}`);});
+    const ph=document.createElement('div');
+    row.appendChild(nd);row.appendChild(pi);row.appendChild(tg);row.appendChild(ph);
+    body.appendChild(row);
+
+    const fw=document.createElement('div'); fw.className='flavours';
+    obj.flavours.forEach(f=>{
+      fw.appendChild(makeFlavourTag(f,()=>{
+        obj.flavours=obj.flavours.filter(x=>x!==f);renderFraiches();scheduleSave(`Goût "${f}" retiré de ${obj.label}`);
+      }));
+    });
+    body.appendChild(fw);
+    body.appendChild(makeAddFlavourForm(v=>{
+      obj.flavours.push(v);renderFraiches();scheduleSave(`Goût "${v}" ajouté à ${obj.label}`);
+    }));
+    el.appendChild(card);
+  });
+}
+
+// ══ PRESSION ══
+function renderPression(){
+  const el=document.getElementById('c-pression'); el.innerHTML='';
+  const {card,body}=makeCard('Bières Pression','<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:78px;text-align:center">25 cl</span><span style="min-width:78px;text-align:center">50 cl</span></div>');
+  D.pression.items.forEach(item=>{
+    const row=makeRow('1fr 78px 78px 34px 26px',!item.active);
+    const nd=document.createElement('div'); nd.innerHTML=`<div class="row-name">${item.name}</div>`;
+    const p25=document.createElement('input'); p25.className='inp inp-price'; p25.type='number'; p25.step='0.1';
+    p25.value=fmtP(item.price25); p25.placeholder=item.special?'ardoise':'0,00';
+    p25.onchange=()=>{item.price25=parseFloat(p25.value)||null;scheduleSave(`Prix "${item.name}" 25cl modifié`);};
+    const p50=document.createElement('input'); p50.className='inp inp-price'; p50.type='number'; p50.step='0.1';
+    p50.value=fmtP(item.price50); p50.placeholder=item.special?'ardoise':'0,00';
+    p50.onchange=()=>{item.price50=parseFloat(p50.value)||null;scheduleSave(`Prix "${item.name}" 50cl modifié`);};
+    const tg=makeToggle(item.active,v=>{item.active=v;renderPression();scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
+    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;D.pression.items=D.pression.items.filter(i=>i!==item);renderPression();scheduleSave(`"${item.name}" supprimé`);});
+    row.appendChild(nd);row.appendChild(p25);row.appendChild(p50);row.appendChild(tg);row.appendChild(db);
+    body.appendChild(row);
+  });
+  const ar=document.createElement('div'); ar.className='add-row';
+  const ni=document.createElement('input'); ni.className='inp inp-wide'; ni.placeholder='Nom de la bière…';
+  const np25=document.createElement('input'); np25.className='inp inp-price'; np25.type='number'; np25.step='0.1'; np25.placeholder='25cl';
+  const np50=document.createElement('input'); np50.className='inp inp-price'; np50.type='number'; np50.step='0.1'; np50.placeholder='50cl';
+  const ab=document.createElement('button'); ab.className='btn-add'; ab.textContent='+ Ajouter';
+  ab.onclick=()=>{
+    const n=ni.value.trim();if(!n)return;
+    D.pression.items.push({id:'p'+uid(),name:n,active:true,price25:parseFloat(np25.value)||null,price50:parseFloat(np50.value)||null});
+    ni.value='';np25.value='';np50.value='';renderPression();scheduleSave(`"${n}" ajouté aux bières pression`);
+  };
+  ar.appendChild(ni);ar.appendChild(np25);ar.appendChild(np50);ar.appendChild(ab);
+  body.appendChild(ar); el.appendChild(card);
+}
+
+// ══ SIMPLE SECTION (bouteilles, chaud, faims, alcools, aperitifs, formules) ══
+function renderSimple(key, containerId, opts={}){
+  const el=document.getElementById(containerId); el.innerHTML='';
+  const sec=D[key];
+  const {card,body}=makeCard(sec.label);
+
+  sec.items.forEach(item=>{
+    const row=makeRow('1fr '+(opts.desc?'1fr ':'')+'90px 34px 26px',!item.active);
+    const nd=document.createElement('div');
+    nd.innerHTML=`<div class="row-name">${item.name}</div>${item.desc?`<div class="row-desc">${item.desc}</div>`:''}`;
+    row.appendChild(nd);
+    if(opts.desc){
+      const di=document.createElement('input'); di.className='inp inp-wide'; di.value=item.desc||''; di.placeholder='Description…';
+      di.onchange=()=>{item.desc=di.value;scheduleSave(`Description "${item.name}" modifiée`);};
+      row.appendChild(di);
+    }
+    const pi=makePriceInput(item.price,v=>{item.price=v;scheduleSave(`Prix "${item.name}" modifié`);});
+    const tg=makeToggle(item.active,v=>{item.active=v;renderSimple(key,containerId,opts);scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
+    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;sec.items=sec.items.filter(i=>i!==item);renderSimple(key,containerId,opts);scheduleSave(`"${item.name}" supprimé`);});
+    row.appendChild(pi);row.appendChild(tg);row.appendChild(db);
+    body.appendChild(row);
+
+    // Flavours pour kir
+    if(item.flavours){
+      const fw=document.createElement('div'); fw.className='flavours';
+      item.flavours.forEach(f=>{
+        fw.appendChild(makeFlavourTag(f,()=>{item.flavours=item.flavours.filter(x=>x!==f);renderSimple(key,containerId,opts);scheduleSave(`Goût "${f}" retiré de ${item.name}`);}));
+      });
+      body.appendChild(fw);
+      body.appendChild(makeAddFlavourForm(v=>{item.flavours.push(v);renderSimple(key,containerId,opts);scheduleSave(`Goût "${v}" ajouté à ${item.name}`);}));
+    }
+  });
+
+  const ar=document.createElement('div'); ar.className='add-row';
+  const ni=document.createElement('input'); ni.className='inp inp-wide'; ni.placeholder="Nom de l'article…";
+  const np=document.createElement('input'); np.className='inp inp-price'; np.type='number'; np.step='0.5'; np.placeholder='0,00';
+  const ab=document.createElement('button'); ab.className='btn-add'; ab.textContent='+ Ajouter';
+  ab.onclick=()=>{
+    const n=ni.value.trim();if(!n)return;
+    sec.items.push({id:key[0]+uid(),name:n,active:true,price:parseFloat(np.value)||0});
+    ni.value='';np.value='';renderSimple(key,containerId,opts);scheduleSave(`"${n}" ajouté`);
+  };
+  ar.appendChild(ni);ar.appendChild(np);ar.appendChild(ab);
+  body.appendChild(ar); el.appendChild(card);
+}
+
+// ══ VINS ══
+function renderVins(){
+  const el=document.getElementById('c-vins'); el.innerHTML='';
+  const {card,body}=makeCard('Les Vins','<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:75px;text-align:center">12 cl</span><span style="min-width:75px;text-align:center">Bouteille</span></div>');
+  D.vins.items.forEach(item=>{
+    const row=makeRow('1fr 75px 75px 34px 26px',!item.active);
+    const nd=document.createElement('div');
+    nd.innerHTML=`<div class="row-name">${item.name} <span style="font-size:11px;color:#999;font-style:italic">${item.type||''}</span></div>`;
+    const p12=makePriceInput(item.price12,v=>{item.price12=v;scheduleSave(`Prix vin "${item.name}" 12cl modifié`);});
+    const pbt=makePriceInput(item.priceBt,v=>{item.priceBt=v;scheduleSave(`Prix vin "${item.name}" bouteille modifié`);});
+    const tg=makeToggle(item.active,v=>{item.active=v;renderVins();scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
+    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;D.vins.items=D.vins.items.filter(i=>i!==item);renderVins();scheduleSave(`"${item.name}" supprimé`);});
+    row.appendChild(nd);row.appendChild(p12);row.appendChild(pbt);row.appendChild(tg);row.appendChild(db);
+    body.appendChild(row);
+  });
+  const ar=document.createElement('div'); ar.className='add-row';
+  const ni=document.createElement('input'); ni.className='inp inp-wide'; ni.placeholder='Nom du vin…';
+  const sel=document.createElement('select'); sel.className='inp'; sel.style.width='90px';
+  ['Rouge','Blanc','Rosé'].forEach(t=>{const o=document.createElement('option');o.textContent=t;sel.appendChild(o);});
+  const np12=document.createElement('input'); np12.className='inp inp-price'; np12.type='number'; np12.step='0.5'; np12.placeholder='12cl';
+  const npbt=document.createElement('input'); npbt.className='inp inp-price'; npbt.type='number'; npbt.step='0.5'; npbt.placeholder='btl';
+  const ab=document.createElement('button'); ab.className='btn-add'; ab.textContent='+ Ajouter';
+  ab.onclick=()=>{
+    const n=ni.value.trim();if(!n)return;
+    D.vins.items.push({id:'v'+uid(),name:n,type:sel.value,active:true,price12:parseFloat(np12.value)||0,priceBt:parseFloat(npbt.value)||0});
+    ni.value='';np12.value='';npbt.value='';renderVins();scheduleSave(`"${n}" ajouté aux vins`);
+  };
+  ar.appendChild(ni);ar.appendChild(sel);ar.appendChild(np12);ar.appendChild(npbt);ar.appendChild(ab);
+  body.appendChild(ar); el.appendChild(card);
+}
+
+// ══ SETTINGS ══
+function changePwd(){
+  const p1=document.getElementById('new-pwd').value;
+  const p2=document.getElementById('new-pwd2').value;
+  if(!p1){ alert('Mot de passe vide.'); return; }
+  if(p1!==p2){ alert('Les mots de passe ne correspondent pas.'); return; }
+  D.admin_password=p1;
+  document.getElementById('new-pwd').value='';
+  document.getElementById('new-pwd2').value='';
+  scheduleSave('Mot de passe admin modifié');
+  alert('Mot de passe modifié et sauvegardé !');
+}
+
+function changeToken(){
+  const t=document.getElementById('new-token').value.trim();
+  if(!t){ alert('Token vide.'); return; }
+  TOKEN=t; localStorage.setItem('chalet_token',t);
+  document.getElementById('new-token').value='';
+  alert('Token mis à jour dans votre navigateur.');
+}
+
+// ══ INIT ══
+function initAll(){
+  renderDashboard();
+  renderFraiches();
+  renderPression();
+  renderSimple('bouteilles','c-bouteilles');
+  renderVins();
+  renderSimple('aperitifs','c-aperitifs');
+  renderSimple('alcools','c-alcools');
+  renderSimple('chaud','c-chaud');
+  renderSimple('faims','c-faims',{desc:true});
+  renderSimple('formules','c-formules',{desc:true});
+}
+</script>
+</body>
+</html>
