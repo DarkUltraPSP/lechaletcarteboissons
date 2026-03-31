@@ -139,6 +139,91 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
 .row-editing{background:#fffef5 !important}
 .row-static{font-size:14px;font-weight:500;color:var(--text);padding:2px 0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row-static-desc{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ══════════════════════════════
+   MOBILE — hamburger sidebar
+══════════════════════════════ */
+
+/* Barre top fixe sur mobile */
+#mobile-bar{
+  display:none;
+  position:fixed;top:0;left:0;right:0;height:52px;
+  background:var(--dark2);z-index:200;
+  align-items:center;justify-content:space-between;
+  padding:0 16px;border-bottom:1px solid #333;
+}
+#mobile-bar-title{font-size:14px;font-weight:600;color:#f0f0f0}
+#hamburger{
+  width:36px;height:36px;border:none;background:transparent;
+  color:#aaa;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;flex-shrink:0;
+}
+#hamburger span{
+  display:block;width:20px;height:2px;background:currentColor;
+  border-radius:2px;transition:all 0.2s;
+}
+#hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#hamburger.open span:nth-child(2){opacity:0}
+#hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Overlay sombre quand sidebar ouverte */
+#sidebar-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.5);z-index:190;
+}
+#sidebar-overlay.visible{display:block}
+
+@media(max-width:700px){
+  #mobile-bar{display:flex}
+  body{padding-top:52px}
+
+  .layout{grid-template-columns:1fr}
+
+  /* Sidebar en drawer latéral */
+  .sidebar{
+    position:fixed;top:52px;left:0;bottom:0;
+    width:260px;z-index:195;
+    transform:translateX(-100%);
+    transition:transform 0.25s ease;
+    height:auto;
+  }
+  .sidebar.open{transform:translateX(0)}
+
+  /* Main prend tout l'écran */
+  .main{padding:16px;max-width:100%}
+
+  /* Stats en 2 colonnes */
+  .stats{grid-template-columns:1fr 1fr}
+
+  /* Rows plus compactes et adaptées au touch */
+  .row{padding:10px 12px;gap:6px}
+  .add-row{padding:10px 12px;gap:6px}
+  .card-head{padding:10px 12px}
+
+  /* Inputs plus grands pour le touch */
+  .inp{padding:8px 10px;font-size:14px}
+  .inp-price{width:70px}
+  .tgl{width:38px;height:22px}
+  .tgl-sl::before{width:16px;height:16px}
+  .tgl input:checked+.tgl-sl::before{transform:translateX(16px)}
+  .btn-del,.btn-edit,.btn-confirm{width:32px;height:32px;font-size:16px}
+  .btn-add{padding:8px 14px;font-size:13px}
+
+  /* Cat rows */
+  .cat-row{grid-template-columns:28px 1fr 34px 26px;padding:10px 12px}
+  .type-badge{display:none}
+
+  /* Settings */
+  .field-row{flex-direction:column;align-items:stretch}
+  .btn-save-setting{width:100%;padding:10px}
+
+  /* Login box */
+  .login-box{width:90%;padding:28px 20px}
+
+  /* Titre de page avec bouton retour */
+  .pg-head{margin-bottom:16px}
+  .pg-title{font-size:17px}
+}
 </style>
 </head>
 <body>
@@ -159,6 +244,17 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
 
 <!-- APP -->
 <div id="app">
+
+<!-- Barre mobile -->
+<div id="mobile-bar">
+  <button id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div id="mobile-bar-title">Back Office</div>
+  <div style="width:36px"></div>
+</div>
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <div class="layout">
 <div class="sidebar">
   <div class="sb-head">
