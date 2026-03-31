@@ -428,6 +428,13 @@
           "desc": "Planche Tapenade + 2 Cocktails"
         }
       ]
+    },
+    {
+      "id": "cat_8hi1i",
+      "label": "Plats Chauds",
+      "type": "simple",
+      "active": true,
+      "items": []
     }
   ]
 }
