@@ -14,7 +14,8 @@
               "id": "f1",
               "name": "Coca-Cola",
               "active": true,
-              "price": 4
+              "price": 4,
+              "desc": ""
             },
             {
               "id": "f2",
