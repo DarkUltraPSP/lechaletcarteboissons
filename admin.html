@@ -7,121 +7,88 @@
 <style>
 :root{
   --gold:#B8922A;--gold-l:#D4AC50;--gold-d:#8A6B1F;
-  --dark:#1C130A;--dark2:#1c1c1c;
-  --cream:#F4ECD8;--muted:#8A7355;
+  --dark:#1C130A;--dark2:#1c1c1c;--cream:#F4ECD8;--muted:#8A7355;
   --bg:#f5f5f3;--white:#fff;--border:#e8e8e8;--border2:#e0e0e0;
-  --text:#1a1a1a;--text2:#555;--text3:#999;
+  --text:#1a1a1a;--text3:#999;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
 
-/* ─ LOGIN ─ */
-#login-screen{
-  position:fixed;inset:0;background:var(--dark);
-  display:flex;align-items:center;justify-content:center;z-index:1000;
-}
-.login-box{
-  background:#241A0C;border:1px solid rgba(184,146,42,0.3);border-radius:12px;
-  padding:40px 36px;width:340px;text-align:center;
-}
-.login-logo{margin-bottom:16px;opacity:0.8}
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{background:#241A0C;border:1px solid rgba(184,146,42,0.3);border-radius:12px;padding:40px 36px;width:340px;text-align:center}
 .login-title{font-family:'Georgia',serif;font-size:20px;color:var(--gold-l);letter-spacing:0.1em;margin-bottom:4px}
 .login-sub{font-size:11px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:28px}
 .login-field{margin-bottom:12px;text-align:left}
 .login-label{font-size:11px;color:var(--muted);margin-bottom:5px;display:block;letter-spacing:0.1em;text-transform:uppercase}
-.login-input{
-  width:100%;padding:10px 14px;background:#1C130A;border:1px solid rgba(184,146,42,0.25);
-  border-radius:6px;color:var(--cream);font-size:14px;outline:none;
-  transition:border-color 0.15s;
-}
+.login-input{width:100%;padding:10px 14px;background:#1C130A;border:1px solid rgba(184,146,42,0.25);border-radius:6px;color:var(--cream);font-size:14px;outline:none;transition:border-color 0.15s}
 .login-input:focus{border-color:var(--gold)}
 .login-input::placeholder{color:#5a4020}
-.login-btn{
-  width:100%;margin-top:8px;padding:11px;background:var(--gold);color:#1C130A;
-  border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;
-  transition:background 0.15s;letter-spacing:0.05em;
-}
+.login-btn{width:100%;margin-top:8px;padding:11px;background:var(--gold);color:#1C130A;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;transition:background 0.15s}
 .login-btn:hover{background:var(--gold-l)}
+.login-btn:disabled{opacity:0.6;cursor:not-allowed}
 .login-error{color:#e07070;font-size:12px;margin-top:10px;min-height:18px}
 .login-note{font-size:10px;color:#5a4020;margin-top:20px;line-height:1.6}
 
-/* ─ APP ─ */
+/* APP */
 #app{display:none}
 .layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
 
-/* Sidebar */
+/* SIDEBAR */
 .sidebar{background:var(--dark2);color:#f0f0f0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
 .sb-head{padding:18px 18px 14px;border-bottom:1px solid #333}
 .sb-logo{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
-.sb-title{font-size:16px;font-weight:600;color:#f0f0f0}
-.sb-user{font-size:11px;color:#555;margin-top:2px}
+.sb-title{font-size:16px;font-weight:600}
 .nav{padding:10px 0;flex:1}
-.nav-sec{padding:8px 18px 4px;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#555}
-.nav-item{
-  display:flex;align-items:center;gap:9px;padding:8px 18px;
-  font-size:13px;color:#aaa;cursor:pointer;border-left:2px solid transparent;
-  transition:all 0.12s;
-}
+.nav-sec-label{padding:8px 18px 4px;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#555}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;font-size:13px;color:#aaa;cursor:pointer;border-left:2px solid transparent;transition:all 0.12s}
 .nav-item:hover{color:#f0f0f0;background:#252525}
 .nav-item.active{color:var(--gold-l);background:#252010;border-left-color:var(--gold)}
 .nav-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:0.5;flex-shrink:0}
 .nav-item.active .nav-dot{opacity:1;background:var(--gold)}
 .sb-foot{padding:14px 18px;border-top:1px solid #333;display:flex;flex-direction:column;gap:8px}
-.btn-preview{
-  width:100%;padding:8px;background:var(--gold);color:#1c1c1c;
-  border:none;border-radius:6px;font-size:12px;font-weight:700;
-  cursor:pointer;transition:background 0.15s;
-}
+.btn-preview{width:100%;padding:8px;background:var(--gold);color:#1c1c1c;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;transition:background 0.15s}
 .btn-preview:hover{background:var(--gold-l)}
-.btn-logout{
-  width:100%;padding:7px;background:transparent;color:#666;
-  border:1px solid #333;border-radius:6px;font-size:11px;
-  cursor:pointer;transition:all 0.15s;
-}
+.btn-logout{width:100%;padding:7px;background:transparent;color:#666;border:1px solid #333;border-radius:6px;font-size:11px;cursor:pointer;transition:all 0.15s}
 .btn-logout:hover{background:#2a2a2a;color:#aaa}
 
-/* Main */
-.main{padding:28px 32px;max-width:860px}
+/* MAIN */
+.main{padding:28px 32px;max-width:920px}
 .pg{display:none}
 .pg.active{display:block}
-.pg-head{margin-bottom:24px}
+.pg-head{margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-start}
 .pg-title{font-size:20px;font-weight:600}
 .pg-desc{font-size:13px;color:#777;margin-top:3px}
 
-/* Stats */
+/* STATS */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
 .stat{background:var(--white);border-radius:8px;border:1px solid var(--border);padding:14px}
 .stat-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
 .stat-val{font-size:24px;font-weight:600}
 .stat-sub{font-size:11px;color:#bbb;margin-top:2px}
 
-/* Cards */
+/* CARD */
 .card{background:var(--white);border-radius:10px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden}
-.card-head{
-  padding:12px 18px;background:#fafafa;border-bottom:1px solid #f0f0f0;
-  display:flex;justify-content:space-between;align-items:center;
-}
+.card-head{padding:12px 18px;background:#fafafa;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#555}
 .card-body{padding:4px 0}
 
-/* Rows */
-.row{
-  display:grid;align-items:center;padding:9px 18px;
-  border-bottom:1px solid #f8f8f8;gap:8px;transition:background 0.1s;
-}
+/* ROW */
+.row{display:grid;align-items:center;padding:9px 18px;border-bottom:1px solid #f8f8f8;gap:8px;transition:background 0.1s}
 .row:last-child{border:none}
 .row:hover{background:#fafafa}
 .row-name{font-size:14px;font-weight:500;color:var(--text)}
 .row-desc{font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row.disabled .row-name{color:#ccc;text-decoration:line-through}
 
-/* Inputs */
+/* INPUTS */
 .inp{padding:5px 8px;border:1px solid var(--border2);border-radius:6px;font-size:13px;color:var(--text);background:var(--white);transition:border-color 0.15s}
 .inp:focus{outline:none;border-color:var(--gold)}
 .inp-price{width:78px;text-align:right}
-.inp-wide{flex:1}
+.inp-sm{width:78px}
+.inp-wide{flex:1;min-width:0}
 
-/* Toggle */
+/* TOGGLE */
 .tgl{position:relative;width:34px;height:19px;flex-shrink:0}
 .tgl input{opacity:0;width:0;height:0}
 .tgl-sl{position:absolute;inset:0;background:#ddd;border-radius:20px;cursor:pointer;transition:background 0.2s}
@@ -129,39 +96,37 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
 .tgl input:checked+.tgl-sl{background:var(--gold)}
 .tgl input:checked+.tgl-sl::before{transform:translateX(15px)}
 
-/* Del btn */
+/* BUTTONS */
 .btn-del{width:26px;height:26px;border-radius:5px;border:none;background:transparent;color:#ccc;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all 0.12s;flex-shrink:0}
 .btn-del:hover{background:#fee;color:#c00}
-
-/* Flavours */
-.flavours{display:flex;flex-wrap:wrap;gap:5px;padding:6px 18px 10px}
-.ftag{display:inline-flex;align-items:center;gap:4px;background:#f0f0ee;border-radius:20px;padding:3px 10px 3px 11px;font-size:12px;color:#444}
-.ftag-rm{width:15px;height:15px;border-radius:50%;background:#ddd;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;color:#888;transition:all 0.1s;flex-shrink:0;line-height:1}
-.ftag-rm:hover{background:#f5c5c5;color:#c00}
-.add-flavour{display:flex;gap:7px;padding:0 18px 10px}
-
-/* Add item row */
-.add-row{display:flex;gap:7px;padding:10px 18px;background:#fafafa;border-top:1px solid #f0f0f0;flex-wrap:wrap;align-items:center}
-
-/* Btn add */
 .btn-add{padding:6px 14px;background:var(--gold);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:background 0.12s;white-space:nowrap}
 .btn-add:hover{background:var(--gold-l)}
-.btn-add-sm{padding:5px 11px;font-size:11px}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-secondary{padding:6px 12px;background:transparent;color:#666;border:1px solid var(--border2);border-radius:6px;font-size:12px;cursor:pointer;transition:all 0.12s;white-space:nowrap}
+.btn-secondary:hover{background:#f5f5f5;color:#333}
 
-/* Save status */
-.save-bar{
-  position:fixed;bottom:20px;right:20px;
-  background:#1a1a1a;color:#fff;padding:9px 16px;border-radius:8px;
-  font-size:13px;font-weight:500;
-  transform:translateY(60px);opacity:0;transition:all 0.25s;
-  z-index:100;display:flex;align-items:center;gap:10px;
-}
+/* ADD ROW */
+.add-row{display:flex;gap:7px;padding:10px 18px;background:#fafafa;border-top:1px solid #f0f0f0;flex-wrap:wrap;align-items:center}
+
+/* SAVE BAR */
+.save-bar{position:fixed;bottom:20px;right:20px;background:#1a1a1a;color:#fff;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;transform:translateY(60px);opacity:0;transition:all 0.25s;z-index:100;display:flex;align-items:center;gap:10px}
 .save-bar.show{transform:translateY(0);opacity:1}
 .save-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .save-ok{color:#7dd47d}
 
-/* Settings page */
+/* CATÉGORIES PAGE */
+.cat-row{display:grid;grid-template-columns:28px 1fr 120px 80px 34px 26px;align-items:center;padding:10px 18px;border-bottom:1px solid #f5f5f5;gap:8px;cursor:grab}
+.cat-row:hover{background:#fafafa}
+.drag-handle{color:#ccc;font-size:16px;cursor:grab;user-select:none;text-align:center}
+.cat-row.dragging{opacity:0.4;background:#f0f0ee}
+.cat-row.drag-over{border-top:2px solid var(--gold)}
+.type-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;letter-spacing:0.05em}
+.type-simple{background:#e8f4e8;color:#2a6a2a}
+.type-double{background:#e8eef8;color:#2a3a6a}
+.type-formule{background:#f8f0e8;color:#6a3a2a}
+
+/* SETTINGS */
 .settings-card{background:var(--white);border-radius:10px;border:1px solid var(--border);padding:24px;margin-bottom:16px}
 .settings-title{font-size:14px;font-weight:600;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #f0f0f0}
 .field{margin-bottom:14px}
@@ -169,17 +134,19 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
 .field-row{display:flex;gap:8px;align-items:center}
 .field input{flex:1;padding:8px 12px;border:1px solid var(--border2);border-radius:6px;font-size:14px;color:var(--text);background:var(--white)}
 .field input:focus{outline:none;border-color:var(--gold)}
-.btn-save-setting{padding:8px 18px;background:var(--gold);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s}
-.btn-save-setting:hover{background:var(--gold-l)}
+.btn-save-setting{padding:8px 18px;background:var(--gold);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer}
 .setting-hint{font-size:11px;color:#aaa;margin-top:6px}
+
+/* SUBSECTION */
+.subsec-label{font-size:11px;color:#888;font-style:italic;padding:8px 18px 4px;border-top:1px solid #f5f5f5;background:#fdfdfb;display:flex;justify-content:space-between;align-items:center}
 </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN ═══ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <svg class="login-logo" width="60" height="44" viewBox="0 0 160 110" fill="none">
+    <svg width="60" height="44" viewBox="0 0 160 110" fill="none" style="margin-bottom:14px;opacity:0.8">
       <path d="M80 8A72 72 0 0 1 152 80" stroke="#B8922A" stroke-width="1.5" fill="none"/>
       <path d="M8 80A72 72 0 0 1 80 8" stroke="#B8922A" stroke-width="1.5" fill="none"/>
       <path d="M8 80A72 72 0 0 0 152 80" stroke="#B8922A" stroke-width="1.5" fill="none"/>
@@ -188,44 +155,29 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
     </svg>
     <div class="login-title">Le Chalet</div>
     <div class="login-sub">Administration</div>
-    <div class="login-field">
-      <label class="login-label">Mot de passe</label>
-      <input class="login-input" type="password" id="login-pwd" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <div class="login-field">
-      <label class="login-label">Token GitHub</label>
-      <input class="login-input" type="password" id="login-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
-    </div>
-    <button class="login-btn" onclick="doLogin()">Connexion</button>
+    <div class="login-field"><label class="login-label">Mot de passe</label><input class="login-input" type="password" id="login-pwd" placeholder="••••••••"></div>
+    <div class="login-field"><label class="login-label">Token GitHub</label><input class="login-input" type="password" id="login-token" placeholder="ghp_xxxxxxxxxxxx"></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Connexion</button>
     <div class="login-error" id="login-err"></div>
-    <div class="login-note">Le token est stocké uniquement dans votre navigateur.<br>Il ne transit jamais sur un serveur externe.</div>
+    <div class="login-note">Le token est stocké uniquement dans votre navigateur.</div>
   </div>
 </div>
 
-<!-- ═══ APP ═══ -->
+<!-- APP -->
 <div id="app">
 <div class="layout">
-
-<!-- Sidebar -->
 <div class="sidebar">
   <div class="sb-head">
     <div class="sb-logo">Le Chalet</div>
     <div class="sb-title">Back Office</div>
-    <div class="sb-user" id="sb-user"></div>
   </div>
   <nav class="nav">
-    <div class="nav-sec">Catalogue</div>
+    <div class="nav-sec-label">Général</div>
     <div class="nav-item active" onclick="pg('dashboard')"><span class="nav-dot"></span>Tableau de bord</div>
-    <div class="nav-item" onclick="pg('fraiches')"><span class="nav-dot"></span>Boissons fraiches</div>
-    <div class="nav-item" onclick="pg('pression')"><span class="nav-dot"></span>Bières pression</div>
-    <div class="nav-item" onclick="pg('bouteilles')"><span class="nav-dot"></span>Bières bouteilles</div>
-    <div class="nav-item" onclick="pg('vins')"><span class="nav-dot"></span>Les vins</div>
-    <div class="nav-item" onclick="pg('aperitifs')"><span class="nav-dot"></span>Apéritifs</div>
-    <div class="nav-item" onclick="pg('alcools')"><span class="nav-dot"></span>Alcools &amp; digestifs</div>
-    <div class="nav-item" onclick="pg('chaud')"><span class="nav-dot"></span>Boissons chaudes</div>
-    <div class="nav-item" onclick="pg('faims')"><span class="nav-dot"></span>Petites faims</div>
-    <div class="nav-item" onclick="pg('formules')"><span class="nav-dot"></span>Formules</div>
-    <div class="nav-sec">Réglages</div>
+    <div class="nav-item" onclick="pg('categories')"><span class="nav-dot"></span>Catégories</div>
+    <div class="nav-sec-label" id="nav-cats-label">Catalogue</div>
+    <div id="nav-cats"></div>
+    <div class="nav-sec-label">Réglages</div>
     <div class="nav-item" onclick="pg('settings')"><span class="nav-dot"></span>Paramètres</div>
   </nav>
   <div class="sb-foot">
@@ -234,510 +186,511 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
   </div>
 </div>
 
-<!-- Main -->
 <div class="main">
 
-<!-- DASHBOARD -->
-<div class="pg active" id="pg-dashboard">
-  <div class="pg-head"><div class="pg-title">Tableau de bord</div><div class="pg-desc">État de la carte en temps réel</div></div>
-  <div class="stats" id="stats"></div>
-  <div class="card">
-    <div class="card-head"><span class="card-title">Dernières sauvegardes</span></div>
-    <div class="card-body" style="padding:14px 18px;font-size:13px;color:#999" id="history">Aucune sauvegarde encore.</div>
+  <!-- DASHBOARD -->
+  <div class="pg active" id="pg-dashboard">
+    <div class="pg-head"><div><div class="pg-title">Tableau de bord</div><div class="pg-desc">État de la carte</div></div></div>
+    <div class="stats" id="stats"></div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">Dernières sauvegardes</span></div>
+      <div class="card-body" style="padding:14px 18px;font-size:13px;color:#999" id="history">Aucune sauvegarde.</div>
+    </div>
   </div>
-</div>
 
-<!-- FRAICHES -->
-<div class="pg" id="pg-fraiches">
-  <div class="pg-head"><div class="pg-title">Boissons Fraiches</div></div>
-  <div id="c-fraiches"></div>
-</div>
-
-<!-- PRESSION -->
-<div class="pg" id="pg-pression">
-  <div class="pg-head"><div class="pg-title">Bières Pression</div></div>
-  <div id="c-pression"></div>
-</div>
-
-<!-- BOUTEILLES -->
-<div class="pg" id="pg-bouteilles">
-  <div class="pg-head"><div class="pg-title">Bières Bouteilles</div></div>
-  <div id="c-bouteilles"></div>
-</div>
-
-<!-- VINS -->
-<div class="pg" id="pg-vins">
-  <div class="pg-head"><div class="pg-title">Les Vins</div></div>
-  <div id="c-vins"></div>
-</div>
-
-<!-- APERITIFS -->
-<div class="pg" id="pg-aperitifs">
-  <div class="pg-head"><div class="pg-title">Apéritifs</div></div>
-  <div id="c-aperitifs"></div>
-</div>
-
-<!-- ALCOOLS -->
-<div class="pg" id="pg-alcools">
-  <div class="pg-head"><div class="pg-title">Alcools &amp; Digestifs</div></div>
-  <div id="c-alcools"></div>
-</div>
-
-<!-- CHAUD -->
-<div class="pg" id="pg-chaud">
-  <div class="pg-head"><div class="pg-title">Boissons Chaudes</div></div>
-  <div id="c-chaud"></div>
-</div>
-
-<!-- FAIMS -->
-<div class="pg" id="pg-faims">
-  <div class="pg-head"><div class="pg-title">Petites Faims</div></div>
-  <div id="c-faims"></div>
-</div>
-
-<!-- FORMULES -->
-<div class="pg" id="pg-formules">
-  <div class="pg-head"><div class="pg-title">Formules</div></div>
-  <div id="c-formules"></div>
-</div>
-
-<!-- SETTINGS -->
-<div class="pg" id="pg-settings">
-  <div class="pg-head"><div class="pg-title">Paramètres</div><div class="pg-desc">Réglages du back office</div></div>
-
-  <div class="settings-card">
-    <div class="settings-title">Mot de passe admin</div>
-    <div class="field">
-      <label>Nouveau mot de passe</label>
-      <div class="field-row">
-        <input type="password" id="new-pwd" placeholder="Nouveau mot de passe">
-        <input type="password" id="new-pwd2" placeholder="Confirmer">
-        <button class="btn-save-setting" onclick="changePwd()">Modifier</button>
+  <!-- CATÉGORIES -->
+  <div class="pg" id="pg-categories">
+    <div class="pg-head">
+      <div><div class="pg-title">Catégories</div><div class="pg-desc">Ajouter, renommer, réordonner, supprimer des catégories</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Ordre &amp; visibilité</span>
+        <span style="font-size:11px;color:#bbb">Glisser-déposer pour réordonner</span>
       </div>
-      <div class="setting-hint">Le mot de passe est stocké dans menu.json et sera demandé à chaque connexion.</div>
+      <div class="card-body" id="cat-list"></div>
     </div>
-  </div>
-
-  <div class="settings-card">
-    <div class="settings-title">Token GitHub</div>
-    <div class="field">
-      <label>Token actuel (masqué)</label>
-      <div class="field-row">
-        <input type="password" id="new-token" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
-        <button class="btn-save-setting" onclick="changeToken()">Mettre à jour</button>
+    <!-- Ajouter catégorie -->
+    <div class="card">
+      <div class="card-head"><span class="card-title">Nouvelle catégorie</span></div>
+      <div class="card-body">
+        <div class="add-row" style="flex-wrap:wrap;gap:10px">
+          <input class="inp inp-wide" id="new-cat-label" placeholder="Nom de la catégorie (ex: Plats Chauds)" style="min-width:200px">
+          <select class="inp" id="new-cat-type">
+            <option value="simple">Simple (1 prix)</option>
+            <option value="double_prix">Double prix (ex: 25cl / 50cl)</option>
+            <option value="formule">Formule (nom + description + prix)</option>
+          </select>
+          <input class="inp inp-sm" id="new-cat-col1" placeholder="Col 1 (ex: 25cl)" style="display:none">
+          <input class="inp inp-sm" id="new-cat-col2" placeholder="Col 2 (ex: 50cl)" style="display:none">
+          <button class="btn-add" onclick="addCategory()">+ Créer la catégorie</button>
+        </div>
       </div>
-      <div class="setting-hint">Stocké uniquement dans votre navigateur (localStorage). Jamais envoyé ailleurs que vers l'API GitHub.</div>
     </div>
   </div>
 
-  <div class="settings-card">
-    <div class="settings-title">Lien de la carte publique</div>
-    <div class="field">
-      <div style="font-size:14px;padding:10px 14px;background:#f8f8f8;border-radius:6px;border:1px solid #eee;font-family:monospace;color:#444" id="public-url"></div>
-      <div class="setting-hint">Partagez ce lien ou générez un QR code depuis ce lien.</div>
+  <!-- PAGE DYNAMIQUE PAR CATÉGORIE -->
+  <div class="pg" id="pg-cat">
+    <div class="pg-head">
+      <div><div class="pg-title" id="cat-pg-title"></div><div class="pg-desc" id="cat-pg-desc"></div></div>
+    </div>
+    <div id="cat-pg-body"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="pg" id="pg-settings">
+    <div class="pg-head"><div><div class="pg-title">Paramètres</div></div></div>
+    <div class="settings-card">
+      <div class="settings-title">Mot de passe admin</div>
+      <div class="field"><label>Nouveau mot de passe</label>
+        <div class="field-row">
+          <input type="password" id="new-pwd" placeholder="Nouveau mot de passe">
+          <input type="password" id="new-pwd2" placeholder="Confirmer">
+          <button class="btn-save-setting" onclick="changePwd()">Modifier</button>
+        </div>
+        <div class="setting-hint">Hashé en SHA-256 avant sauvegarde — jamais stocké en clair.</div>
+      </div>
+    </div>
+    <div class="settings-card">
+      <div class="settings-title">Token GitHub</div>
+      <div class="field"><label>Nouveau token</label>
+        <div class="field-row">
+          <input type="password" id="new-token" placeholder="ghp_xxxxxxxxxxxx">
+          <button class="btn-save-setting" onclick="changeToken()">Mettre à jour</button>
+        </div>
+        <div class="setting-hint">Stocké uniquement dans votre navigateur (localStorage).</div>
+      </div>
+    </div>
+    <div class="settings-card">
+      <div class="settings-title">Lien de la carte publique</div>
+      <div style="font-size:14px;padding:10px 14px;background:#f8f8f8;border-radius:6px;border:1px solid #eee;font-family:monospace;color:#444">
+        https://darkultrapsp.github.io/lechaletcarteboissons/
+      </div>
     </div>
   </div>
-</div>
 
 </div><!-- /main -->
 </div><!-- /layout -->
 </div><!-- /app -->
 
-<!-- Save bar -->
 <div class="save-bar" id="save-bar">
   <div class="save-spinner" id="save-spin"></div>
-  <span id="save-msg">Sauvegarde en cours…</span>
+  <span id="save-msg">Sauvegarde…</span>
 </div>
 
 <script>
-const REPO   = 'DarkUltraPSP/lechaletcarteboissons';
-const BRANCH = 'main';
-const FILE   = 'menu.json';
-const API    = `https://api.github.com/repos/${REPO}/contents/${FILE}`;
-const PUBLIC = `https://darkultrapsp.github.io/lechaletcarteboissons/`;
+const REPO='DarkUltraPSP/lechaletcarteboissons', BRANCH='main', FILE='menu.json';
+const API=`https://api.github.com/repos/${REPO}/contents/${FILE}`;
+let D=null, SHA=null, TOKEN='';
+let HISTORY=JSON.parse(localStorage.getItem('chalet_history2')||'[]');
+let currentCatId=null;
 
-let D = null;   // données courantes
-let SHA = null; // SHA du fichier GitHub (requis pour PUT)
-let TOKEN = ''; // token GitHub (depuis localStorage)
-let HISTORY = JSON.parse(localStorage.getItem('chalet_history')||'[]');
-
-// ══ HASH SHA-256 ══
+// ── HASH ──
 async function sha256(str){
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// ══ LOGIN ══
-async function doLogin(){
-  const pwd   = document.getElementById('login-pwd').value;
-  const token = document.getElementById('login-token').value.trim();
-  const err   = document.getElementById('login-err');
-  const btn   = document.querySelector('.login-btn');
-  err.textContent = '';
-
-  if(!token){ err.textContent = 'Token GitHub requis.'; return; }
-  if(!pwd)  { err.textContent = 'Mot de passe requis.'; return; }
-
-  btn.textContent = 'Connexion…'; btn.disabled = true;
-
-  try {
-    const res = await fetch(API, { headers:{ Authorization:'token '+token, Accept:'application/vnd.github.v3+json' }});
-    if(!res.ok) throw new Error('Token invalide ou dépôt introuvable ('+res.status+')');
-    const json = await res.json();
-    SHA = json.sha;
-    D   = JSON.parse(decodeURIComponent(atob(json.content.replace(/\n/g,'')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-
-    // Hash le mot de passe saisi et compare au hash stocké
-    const hash = await sha256(pwd);
-    if(hash !== D.admin_password){ err.textContent = 'Mot de passe incorrect.'; D=null; SHA=null; btn.textContent='Connexion'; btn.disabled=false; return; }
-
-    TOKEN = token;
-    localStorage.setItem('chalet_token', token);
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('sb-user').textContent = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('public-url').textContent = PUBLIC;
-    initAll();
-  } catch(e){
-    err.textContent = e.message;
-    btn.textContent = 'Connexion'; btn.disabled = false;
-  }
+// ── ENCODE/DECODE UTF-8 base64 ──
+function b64enc(str){
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p)));
+}
+function b64dec(str){
+  return decodeURIComponent(atob(str.replace(/\n/g,'')).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
 }
 
-// Auto-fill token si déjà enregistré
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('chalet_token');
-  if(saved) document.getElementById('login-token').value = saved;
-  document.getElementById('login-pwd').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
-  document.getElementById('login-token').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+// ── LOGIN ──
+async function doLogin(){
+  const pwd=document.getElementById('login-pwd').value;
+  const token=document.getElementById('login-token').value.trim();
+  const err=document.getElementById('login-err');
+  const btn=document.getElementById('login-btn');
+  err.textContent='';
+  if(!token){err.textContent='Token GitHub requis.';return;}
+  if(!pwd){err.textContent='Mot de passe requis.';return;}
+  btn.textContent='Connexion…';btn.disabled=true;
+  try{
+    const res=await fetch(API,{headers:{Authorization:'token '+token,Accept:'application/vnd.github.v3+json'}});
+    if(!res.ok) throw new Error('Token invalide ou dépôt introuvable ('+res.status+')');
+    const json=await res.json();
+    SHA=json.sha;
+    D=JSON.parse(b64dec(json.content));
+    const hash=await sha256(pwd);
+    if(hash!==D.admin_password){err.textContent='Mot de passe incorrect.';D=null;SHA=null;btn.textContent='Connexion';btn.disabled=false;return;}
+    TOKEN=token;
+    localStorage.setItem('chalet_token',token);
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    initAll();
+  }catch(e){err.textContent=e.message;btn.textContent='Connexion';btn.disabled=false;}
+}
+
+function logout(){localStorage.removeItem('chalet_token');location.reload();}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('chalet_token');
+  if(saved) document.getElementById('login-token').value=saved;
+  ['login-pwd','login-token'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  });
+  document.getElementById('new-cat-type').addEventListener('change',function(){
+    const isDbl=this.value==='double_prix';
+    document.getElementById('new-cat-col1').style.display=isDbl?'block':'none';
+    document.getElementById('new-cat-col2').style.display=isDbl?'block':'none';
+  });
 });
 
-function logout(){
-  localStorage.removeItem('chalet_token');
-  location.reload();
-}
-
-// ══ SAVE TO GITHUB ══
-let saveTimer = null;
-function scheduleSave(label){
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=>saveNow(label), 1200);
-}
-
+// ── SAVE ──
+let saveTimer=null;
+function scheduleSave(label){clearTimeout(saveTimer);saveTimer=setTimeout(()=>saveNow(label),1200);}
 async function saveNow(label){
   showSaveBar('saving');
-  try {
-    const content = btoa(encodeURIComponent(JSON.stringify(D, null, 2)).replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1)));
-    const res = await fetch(API, {
-      method: 'PUT',
-      headers: { Authorization:'token '+TOKEN, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json' },
-      body: JSON.stringify({ message: label||'Mise à jour carte', content, sha: SHA, branch: BRANCH })
+  try{
+    const content=b64enc(JSON.stringify(D,null,2));
+    const res=await fetch(API,{
+      method:'PUT',
+      headers:{Authorization:'token '+TOKEN,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:label||'Mise à jour carte',content,sha:SHA,branch:BRANCH})
     });
-    if(!res.ok){ const j=await res.json(); throw new Error(j.message||res.status); }
-    const j = await res.json();
-    SHA = j.content.sha;
-    const ts = new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    HISTORY.unshift({ time:ts, label:label||'Sauvegarde' });
+    if(!res.ok){const j=await res.json();throw new Error(j.message||res.status);}
+    const j=await res.json(); SHA=j.content.sha;
+    const ts=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    HISTORY.unshift({time:ts,label:label||'Sauvegarde'});
     if(HISTORY.length>8) HISTORY.pop();
-    localStorage.setItem('chalet_history', JSON.stringify(HISTORY));
-    showSaveBar('ok');
-    renderDashboard();
-  } catch(e){
-    showSaveBar('error', e.message);
-  }
+    localStorage.setItem('chalet_history2',JSON.stringify(HISTORY));
+    showSaveBar('ok'); renderDashboard();
+  }catch(e){showSaveBar('error',e.message);}
 }
-
-function showSaveBar(state, msg=''){
-  const bar = document.getElementById('save-bar');
-  const spin = document.getElementById('save-spin');
-  const txt  = document.getElementById('save-msg');
+function showSaveBar(state,msg=''){
+  const bar=document.getElementById('save-bar');
+  const spin=document.getElementById('save-spin');
+  const txt=document.getElementById('save-msg');
   bar.classList.add('show');
-  if(state==='saving'){ spin.style.display='block'; txt.textContent='Sauvegarde en cours…'; bar.style.background='#1a1a1a'; }
-  else if(state==='ok'){ spin.style.display='none'; txt.innerHTML='<span class="save-ok">✓</span> Sauvegardé sur GitHub'; bar.style.background='#1a3a1a'; setTimeout(()=>bar.classList.remove('show'),2500); }
-  else { spin.style.display='none'; txt.textContent='Erreur : '+msg; bar.style.background='#3a1a1a'; setTimeout(()=>bar.classList.remove('show'),4000); }
+  if(state==='saving'){spin.style.display='block';txt.textContent='Sauvegarde en cours…';bar.style.background='#1a1a1a';}
+  else if(state==='ok'){spin.style.display='none';txt.innerHTML='<span class="save-ok">✓</span> Sauvegardé sur GitHub';bar.style.background='#1a3a1a';setTimeout(()=>bar.classList.remove('show'),2500);}
+  else{spin.style.display='none';txt.textContent='Erreur : '+msg;bar.style.background='#3a1a1a';setTimeout(()=>bar.classList.remove('show'),4000);}
 }
 
-// ══ NAVIGATION ══
+// ── NAV ──
 function pg(id){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('pg-'+id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>{ if(n.getAttribute('onclick')?.includes("'"+id+"'")) n.classList.add('active'); });
+  document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')?.includes("'"+id+"'"))n.classList.add('active');});
+}
+function pgCat(catId){
+  currentCatId=catId;
+  const cat=D.categories.find(c=>c.id===catId);
+  if(!cat) return;
+  document.getElementById('cat-pg-title').textContent=cat.label;
+  document.getElementById('cat-pg-desc').textContent=typeLabel(cat.type);
+  renderCatPage(cat);
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('pg-cat').classList.add('active');
+  document.querySelectorAll('.nav-item[data-cat="'+catId+'"]').forEach(n=>n.classList.add('active'));
 }
 
-// ══ HELPERS ══
-function uid(){ return Math.random().toString(36).slice(2,7); }
-function fmtP(p){ return p==null?'':parseFloat(p).toFixed(2); }
-
-function makeToggle(checked, onChange){
-  const l=document.createElement('label'); l.className='tgl';
-  const i=document.createElement('input'); i.type='checkbox'; i.checked=checked;
-  i.onchange=()=>onChange(i.checked);
-  const s=document.createElement('span'); s.className='tgl-sl';
-  l.appendChild(i); l.appendChild(s); return l;
+// ── HELPERS ──
+function uid(){return Math.random().toString(36).slice(2,7);}
+function fmtP(p){return p==null?'':parseFloat(p).toFixed(2);}
+function typeLabel(t){return t==='double_prix'?'Double prix':t==='formule'?'Formule':'Simple (1 prix)';}
+function typeBadge(t){
+  const cls=t==='double_prix'?'type-double':t==='formule'?'type-formule':'type-simple';
+  return `<span class="type-badge ${cls}">${typeLabel(t)}</span>`;
 }
 
+function makeToggle(checked,onChange){
+  const l=document.createElement('label');l.className='tgl';
+  const i=document.createElement('input');i.type='checkbox';i.checked=checked;i.onchange=()=>onChange(i.checked);
+  const s=document.createElement('span');s.className='tgl-sl';
+  l.appendChild(i);l.appendChild(s);return l;
+}
 function makeDelBtn(onClick){
-  const b=document.createElement('button'); b.className='btn-del'; b.textContent='×'; b.onclick=onClick; return b;
+  const b=document.createElement('button');b.className='btn-del';b.textContent='×';b.onclick=onClick;return b;
 }
-
-function makePriceInput(val, onChange, placeholder='0,00'){
-  const i=document.createElement('input'); i.className='inp inp-price'; i.type='number'; i.step='0.5';
-  i.value=fmtP(val); i.placeholder=placeholder;
-  i.onchange=()=>onChange(parseFloat(i.value)||0);
-  return i;
+function makePriceInput(val,onChange){
+  const i=document.createElement('input');i.className='inp inp-price';i.type='number';i.step='0.5';
+  i.value=fmtP(val);i.onchange=()=>onChange(parseFloat(i.value)||0);return i;
 }
-
-function makeFlavourTag(text, onRemove){
-  const d=document.createElement('div'); d.className='ftag';
-  d.innerHTML=`<span>${text}</span>`;
-  const b=document.createElement('button'); b.className='ftag-rm'; b.textContent='×'; b.onclick=onRemove;
-  d.appendChild(b); return d;
-}
-
-function makeAddFlavourForm(onAdd){
-  const d=document.createElement('div'); d.className='add-flavour';
-  const i=document.createElement('input'); i.className='inp inp-wide'; i.placeholder='Ajouter un goût…';
-  const b=document.createElement('button'); b.className='btn-add btn-add-sm'; b.textContent='+ Goût';
-  b.onclick=()=>{ const v=i.value.trim(); if(v){onAdd(v);i.value='';} };
-  i.addEventListener('keydown',e=>{if(e.key==='Enter')b.click();});
-  d.appendChild(i); d.appendChild(b); return d;
-}
-
-function makeCard(title, extraHead=''){
-  const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<div class="card-head"><span class="card-title">${title}</span>${extraHead}</div>`;
-  const b=document.createElement('div'); b.className='card-body'; c.appendChild(b);
-  return {card:c, body:b};
-}
-
-// Row avec colonnes custom
-function makeRow(cols, disabled=false){
+function makeRow(cols,disabled=false){
   const d=document.createElement('div');
   d.className='row'+(disabled?' disabled':'');
-  d.style.gridTemplateColumns=cols;
-  return d;
+  d.style.gridTemplateColumns=cols;return d;
+}
+function makeAddRow(...children){
+  const d=document.createElement('div');d.className='add-row';
+  children.forEach(c=>d.appendChild(c));return d;
+}
+function makeInp(placeholder,cls='inp inp-wide'){
+  const i=document.createElement('input');i.className=cls;i.placeholder=placeholder;return i;
+}
+function makeBtn(label,cls,onClick){
+  const b=document.createElement('button');b.className=cls;b.textContent=label;b.onclick=onClick;return b;
 }
 
-// ══ DASHBOARD ══
+// ── DASHBOARD ──
 function renderDashboard(){
   let total=0,active=0;
-  const keys=['pression','bouteilles','vins','aperitifs','alcools','chaud','faims','formules'];
-  keys.forEach(k=>{ D[k].items.forEach(i=>{total++;if(i.active)active++;}); });
-  D.fraiches.subsections.forEach(s=>s.items.forEach(i=>{total++;if(i.active)active++;}));
-  ['jus','sirop','diabolo'].forEach(k=>{total++;if(D.fraiches[k].active)active++;});
+  (D.categories||[]).forEach(cat=>{
+    if(cat.subsections) cat.subsections.forEach(s=>s.items.forEach(i=>{total++;if(i.active)active++;}));
+    else (cat.items||[]).forEach(i=>{total++;if(i.active)active++;});
+  });
   document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="stat-label">Catégories</div><div class="stat-val">${D.categories.length}</div><div class="stat-sub">${D.categories.filter(c=>c.active).length} actives</div></div>
     <div class="stat"><div class="stat-label">Articles</div><div class="stat-val">${total}</div><div class="stat-sub">sur la carte</div></div>
     <div class="stat"><div class="stat-label">Actifs</div><div class="stat-val" style="color:#2a7a3b">${active}</div><div class="stat-sub">${total-active} masqué(s)</div></div>
-    <div class="stat"><div class="stat-label">Parfums</div><div class="stat-val">${D.fraiches.sirop.flavours.length+D.fraiches.diabolo.flavours.length+D.fraiches.jus.flavours.length}</div><div class="stat-sub">variantes</div></div>
   `;
-  const h=document.getElementById('history');
-  h.innerHTML = HISTORY.length===0
-    ? '<span style="color:#bbb">Aucune sauvegarde encore.</span>'
-    : HISTORY.map(x=>`<div style="padding:5px 0;border-bottom:1px solid #f8f8f8;display:flex;gap:10px"><span style="color:#bbb;font-size:12px;min-width:55px">${x.time}</span><span>${x.label}</span></div>`).join('');
+  document.getElementById('history').innerHTML=HISTORY.length===0
+    ?'<span style="color:#bbb">Aucune sauvegarde encore.</span>'
+    :HISTORY.map(x=>`<div style="padding:5px 0;border-bottom:1px solid #f8f8f8;display:flex;gap:10px"><span style="color:#bbb;font-size:12px;min-width:55px">${x.time}</span><span>${x.label}</span></div>`).join('');
 }
 
-// ══ FRAICHES ══
-function renderFraiches(){
-  const el=document.getElementById('c-fraiches'); el.innerHTML='';
+// ── NAV CATÉGORIES ──
+function renderNavCats(){
+  const el=document.getElementById('nav-cats');el.innerHTML='';
+  (D.categories||[]).forEach(cat=>{
+    const d=document.createElement('div');
+    d.className='nav-item';d.dataset.cat=cat.id;
+    d.innerHTML=`<span class="nav-dot"></span>${cat.label}`;
+    d.onclick=()=>pgCat(cat.id);
+    el.appendChild(d);
+  });
+}
 
-  D.fraiches.subsections.forEach((sub,si)=>{
-    const {card,body}=makeCard(sub.label);
-    sub.items.forEach(item=>{
-      const row=makeRow('1fr 90px 34px 26px', !item.active);
-      const nd=document.createElement('div');
-      nd.innerHTML=`<div class="row-name">${item.name}</div>`;
-      const pi=makePriceInput(item.price,v=>{item.price=v;scheduleSave(`Prix "${item.name}" modifié`);});
-      const tg=makeToggle(item.active,v=>{item.active=v;renderFraiches();scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
-      const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;sub.items=sub.items.filter(i=>i!==item);renderFraiches();scheduleSave(`"${item.name}" supprimé`);});
-      row.appendChild(nd);row.appendChild(pi);row.appendChild(tg);row.appendChild(db);
-      body.appendChild(row);
+// ── PAGE CATÉGORIES (gestion) ──
+function renderCatManage(){
+  const el=document.getElementById('cat-list');el.innerHTML='';
+  (D.categories||[]).forEach((cat,idx)=>{
+    const row=document.createElement('div');
+    row.className='cat-row';row.draggable=true;row.dataset.idx=idx;
+
+    // Drag & drop
+    row.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',idx);row.classList.add('dragging');});
+    row.addEventListener('dragend',()=>row.classList.remove('dragging'));
+    row.addEventListener('dragover',e=>{e.preventDefault();row.classList.add('drag-over');});
+    row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));
+    row.addEventListener('drop',e=>{
+      e.preventDefault();row.classList.remove('drag-over');
+      const from=parseInt(e.dataTransfer.getData('text/plain'));
+      const to=idx;
+      if(from===to) return;
+      const cats=D.categories;
+      const [moved]=cats.splice(from,1);
+      cats.splice(to,0,moved);
+      renderCatManage();renderNavCats();scheduleSave('Catégories réordonnées');
     });
-    // Add
-    const ar=document.createElement('div'); ar.className='add-row';
-    const ni=document.createElement('input'); ni.className='inp inp-wide'; ni.placeholder='Nouveau soda…';
-    const np=document.createElement('input'); np.className='inp inp-price'; np.type='number'; np.step='0.5'; np.placeholder='4,00';
-    const ab=document.createElement('button'); ab.className='btn-add'; ab.textContent='+ Ajouter';
-    ab.onclick=()=>{
-      const n=ni.value.trim(); if(!n)return;
-      sub.items.push({id:'f'+uid(),name:n,active:true,price:parseFloat(np.value)||4});
-      ni.value='';np.value='';renderFraiches();scheduleSave(`"${n}" ajouté`);
-    };
-    ni.addEventListener('keydown',e=>{if(e.key==='Enter')ab.click();});
-    ar.appendChild(ni);ar.appendChild(np);ar.appendChild(ab);
-    body.appendChild(ar); el.appendChild(card);
-  });
 
-  // Jus / Sirop / Diabolo
-  ['jus','sirop','diabolo'].forEach(key=>{
-    const obj=D.fraiches[key];
-    const {card,body}=makeCard(obj.label);
-    const row=makeRow('1fr 90px 34px 26px',!obj.active);
-    const nd=document.createElement('div');
-    nd.innerHTML=`<div class="row-name">${obj.label}</div><div class="row-desc">${obj.flavours.join(' · ')}</div>`;
-    const pi=makePriceInput(obj.price,v=>{obj.price=v;scheduleSave(`Prix ${obj.label} modifié`);});
-    const tg=makeToggle(obj.active,v=>{obj.active=v;renderFraiches();scheduleSave(`${obj.label} ${v?'activé':'masqué'}`);});
-    const ph=document.createElement('div');
-    row.appendChild(nd);row.appendChild(pi);row.appendChild(tg);row.appendChild(ph);
-    body.appendChild(row);
-
-    const fw=document.createElement('div'); fw.className='flavours';
-    obj.flavours.forEach(f=>{
-      fw.appendChild(makeFlavourTag(f,()=>{
-        obj.flavours=obj.flavours.filter(x=>x!==f);renderFraiches();scheduleSave(`Goût "${f}" retiré de ${obj.label}`);
-      }));
+    const handle=document.createElement('div');handle.className='drag-handle';handle.textContent='⠿';
+    const nameInp=document.createElement('input');nameInp.className='inp inp-wide';nameInp.value=cat.label;
+    nameInp.onchange=()=>{cat.label=nameInp.value;renderNavCats();scheduleSave(`Catégorie "${cat.label}" renommée`);};
+    const badge=document.createElement('div');badge.innerHTML=typeBadge(cat.type);
+    const tg=makeToggle(cat.active,v=>{cat.active=v;scheduleSave(`Catégorie "${cat.label}" ${v?'activée':'masquée'}`);});
+    const db=makeDelBtn(()=>{
+      if(!confirm(`Supprimer la catégorie "${cat.label}" et tous ses articles ?`)) return;
+      D.categories.splice(idx,1);
+      renderCatManage();renderNavCats();scheduleSave(`Catégorie "${cat.label}" supprimée`);
     });
-    body.appendChild(fw);
-    body.appendChild(makeAddFlavourForm(v=>{
-      obj.flavours.push(v);renderFraiches();scheduleSave(`Goût "${v}" ajouté à ${obj.label}`);
-    }));
-    el.appendChild(card);
+
+    row.appendChild(handle);row.appendChild(nameInp);row.appendChild(badge);row.appendChild(tg);row.appendChild(db);
+    el.appendChild(row);
   });
 }
 
-// ══ PRESSION ══
-function renderPression(){
-  const el=document.getElementById('c-pression'); el.innerHTML='';
-  const {card,body}=makeCard('Bières Pression','<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:78px;text-align:center">25 cl</span><span style="min-width:78px;text-align:center">50 cl</span></div>');
-  D.pression.items.forEach(item=>{
-    const row=makeRow('1fr 78px 78px 34px 26px',!item.active);
-    const nd=document.createElement('div'); nd.innerHTML=`<div class="row-name">${item.name}</div>`;
-    const p25=document.createElement('input'); p25.className='inp inp-price'; p25.type='number'; p25.step='0.1';
-    p25.value=fmtP(item.price25); p25.placeholder=item.special?'ardoise':'0,00';
-    p25.onchange=()=>{item.price25=parseFloat(p25.value)||null;scheduleSave(`Prix "${item.name}" 25cl modifié`);};
-    const p50=document.createElement('input'); p50.className='inp inp-price'; p50.type='number'; p50.step='0.1';
-    p50.value=fmtP(item.price50); p50.placeholder=item.special?'ardoise':'0,00';
-    p50.onchange=()=>{item.price50=parseFloat(p50.value)||null;scheduleSave(`Prix "${item.name}" 50cl modifié`);};
-    const tg=makeToggle(item.active,v=>{item.active=v;renderPression();scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
-    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;D.pression.items=D.pression.items.filter(i=>i!==item);renderPression();scheduleSave(`"${item.name}" supprimé`);});
-    row.appendChild(nd);row.appendChild(p25);row.appendChild(p50);row.appendChild(tg);row.appendChild(db);
-    body.appendChild(row);
-  });
-  const ar=document.createElement('div'); ar.className='add-row';
-  const ni=document.createElement('input'); ni.className='inp inp-wide'; ni.placeholder='Nom de la bière…';
-  const np25=document.createElement('input'); np25.className='inp inp-price'; np25.type='number'; np25.step='0.1'; np25.placeholder='25cl';
-  const np50=document.createElement('input'); np50.className='inp inp-price'; np50.type='number'; np50.step='0.1'; np50.placeholder='50cl';
-  const ab=document.createElement('button'); ab.className='btn-add'; ab.textContent='+ Ajouter';
-  ab.onclick=()=>{
-    const n=ni.value.trim();if(!n)return;
-    D.pression.items.push({id:'p'+uid(),name:n,active:true,price25:parseFloat(np25.value)||null,price50:parseFloat(np50.value)||null});
-    ni.value='';np25.value='';np50.value='';renderPression();scheduleSave(`"${n}" ajouté aux bières pression`);
-  };
-  ar.appendChild(ni);ar.appendChild(np25);ar.appendChild(np50);ar.appendChild(ab);
-  body.appendChild(ar); el.appendChild(card);
+// ── AJOUTER CATÉGORIE ──
+function addCategory(){
+  const label=document.getElementById('new-cat-label').value.trim();
+  if(!label){alert('Nom requis.');return;}
+  const type=document.getElementById('new-cat-type').value;
+  const col1=document.getElementById('new-cat-col1').value.trim()||'Prix 1';
+  const col2=document.getElementById('new-cat-col2').value.trim()||'Prix 2';
+  const cat={id:'cat_'+uid(),label,type,active:true,items:[]};
+  if(type==='double_prix'){cat.col1=col1;cat.col2=col2;}
+  D.categories.push(cat);
+  document.getElementById('new-cat-label').value='';
+  document.getElementById('new-cat-col1').value='';
+  document.getElementById('new-cat-col2').value='';
+  renderCatManage();renderNavCats();
+  scheduleSave(`Catégorie "${label}" créée`);
+  alert(`Catégorie "${label}" créée ! Elle apparaît dans le menu latéral.`);
 }
 
-// ══ SIMPLE SECTION (bouteilles, chaud, faims, alcools, aperitifs, formules) ══
-function renderSimple(key, containerId, opts={}){
-  const el=document.getElementById(containerId); el.innerHTML='';
-  const sec=D[key];
-  const {card,body}=makeCard(sec.label);
+// ── PAGE D'UNE CATÉGORIE ──
+function renderCatPage(cat){
+  const el=document.getElementById('cat-pg-body');el.innerHTML='';
+  document.getElementById('cat-pg-title').textContent=cat.label;
 
-  sec.items.forEach(item=>{
-    const row=makeRow('1fr '+(opts.desc?'1fr ':'')+'90px 34px 26px',!item.active);
+  if(cat.type==='simple'){
+    if(cat.subsections){
+      // Catégorie avec sous-sections (ex: boissons fraiches)
+      cat.subsections.forEach((sub,si)=>{
+        el.appendChild(buildSubsectionCard(cat,sub,si));
+      });
+      // Ajouter sous-section
+      const addSubCard=document.createElement('div');addSubCard.className='card';
+      addSubCard.innerHTML='<div class="card-head"><span class="card-title">Ajouter une sous-section</span></div>';
+      const b=document.createElement('div');b.className='card-body';
+      const ni=makeInp('Nom de la sous-section…');
+      const ab=makeBtn('+ Créer','btn-add',()=>{
+        const n=ni.value.trim();if(!n)return;
+        cat.subsections.push({id:'sub_'+uid(),label:n,items:[]});
+        ni.value='';renderCatPage(cat);scheduleSave(`Sous-section "${n}" créée`);
+      });
+      b.appendChild(makeAddRow(ni,ab));
+      addSubCard.appendChild(b);el.appendChild(addSubCard);
+    } else {
+      el.appendChild(buildSimpleCard(cat));
+    }
+  } else if(cat.type==='double_prix'){
+    el.appendChild(buildDoubleCard(cat));
+  } else if(cat.type==='formule'){
+    el.appendChild(buildFormuleCard(cat));
+  }
+}
+
+// Card simple
+function buildSimpleCard(cat){
+  const {card,body}=makeCard2(cat.label);
+  (cat.items||[]).forEach(item=>{
+    const row=makeRow('1fr 78px 34px 26px',!item.active);
     const nd=document.createElement('div');
     nd.innerHTML=`<div class="row-name">${item.name}</div>${item.desc?`<div class="row-desc">${item.desc}</div>`:''}`;
-    row.appendChild(nd);
-    if(opts.desc){
-      const di=document.createElement('input'); di.className='inp inp-wide'; di.value=item.desc||''; di.placeholder='Description…';
-      di.onchange=()=>{item.desc=di.value;scheduleSave(`Description "${item.name}" modifiée`);};
-      row.appendChild(di);
-    }
     const pi=makePriceInput(item.price,v=>{item.price=v;scheduleSave(`Prix "${item.name}" modifié`);});
-    const tg=makeToggle(item.active,v=>{item.active=v;renderSimple(key,containerId,opts);scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
-    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;sec.items=sec.items.filter(i=>i!==item);renderSimple(key,containerId,opts);scheduleSave(`"${item.name}" supprimé`);});
-    row.appendChild(pi);row.appendChild(tg);row.appendChild(db);
+    const tg=makeToggle(item.active,v=>{item.active=v;renderCatPage(cat);scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
+    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;cat.items=cat.items.filter(i=>i!==item);renderCatPage(cat);scheduleSave(`"${item.name}" supprimé`);});
+    row.appendChild(nd);row.appendChild(pi);row.appendChild(tg);row.appendChild(db);
     body.appendChild(row);
-
-    // Flavours pour kir
-    if(item.flavours){
-      const fw=document.createElement('div'); fw.className='flavours';
-      item.flavours.forEach(f=>{
-        fw.appendChild(makeFlavourTag(f,()=>{item.flavours=item.flavours.filter(x=>x!==f);renderSimple(key,containerId,opts);scheduleSave(`Goût "${f}" retiré de ${item.name}`);}));
-      });
-      body.appendChild(fw);
-      body.appendChild(makeAddFlavourForm(v=>{item.flavours.push(v);renderSimple(key,containerId,opts);scheduleSave(`Goût "${v}" ajouté à ${item.name}`);}));
-    }
   });
-
-  const ar=document.createElement('div'); ar.className='add-row';
-  const ni=document.createElement('input'); ni.className='inp inp-wide'; ni.placeholder="Nom de l'article…";
-  const np=document.createElement('input'); np.className='inp inp-price'; np.type='number'; np.step='0.5'; np.placeholder='0,00';
-  const ab=document.createElement('button'); ab.className='btn-add'; ab.textContent='+ Ajouter';
-  ab.onclick=()=>{
-    const n=ni.value.trim();if(!n)return;
-    sec.items.push({id:key[0]+uid(),name:n,active:true,price:parseFloat(np.value)||0});
-    ni.value='';np.value='';renderSimple(key,containerId,opts);scheduleSave(`"${n}" ajouté`);
-  };
-  ar.appendChild(ni);ar.appendChild(np);ar.appendChild(ab);
-  body.appendChild(ar); el.appendChild(card);
+  body.appendChild(buildAddSimple(cat,()=>renderCatPage(cat)));
+  return card;
 }
 
-// ══ VINS ══
-function renderVins(){
-  const el=document.getElementById('c-vins'); el.innerHTML='';
-  const {card,body}=makeCard('Les Vins','<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:75px;text-align:center">12 cl</span><span style="min-width:75px;text-align:center">Bouteille</span></div>');
-  D.vins.items.forEach(item=>{
-    const row=makeRow('1fr 75px 75px 34px 26px',!item.active);
+// Card sous-section
+function buildSubsectionCard(cat,sub,si){
+  const {card,body}=makeCard2(sub.label,'<button class="btn-secondary" style="font-size:11px" onclick="deleteSubsection(\''+cat.id+'\','+si+')">Supprimer la sous-section</button>');
+  sub.items.forEach(item=>{
+    const row=makeRow('1fr 78px 34px 26px',!item.active);
     const nd=document.createElement('div');
-    nd.innerHTML=`<div class="row-name">${item.name} <span style="font-size:11px;color:#999;font-style:italic">${item.type||''}</span></div>`;
-    const p12=makePriceInput(item.price12,v=>{item.price12=v;scheduleSave(`Prix vin "${item.name}" 12cl modifié`);});
-    const pbt=makePriceInput(item.priceBt,v=>{item.priceBt=v;scheduleSave(`Prix vin "${item.name}" bouteille modifié`);});
-    const tg=makeToggle(item.active,v=>{item.active=v;renderVins();scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
-    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;D.vins.items=D.vins.items.filter(i=>i!==item);renderVins();scheduleSave(`"${item.name}" supprimé`);});
-    row.appendChild(nd);row.appendChild(p12);row.appendChild(pbt);row.appendChild(tg);row.appendChild(db);
+    nd.innerHTML=`<div class="row-name">${item.name}</div>${item.desc?`<div class="row-desc">${item.desc}</div>`:''}`;
+    const pi=makePriceInput(item.price,v=>{item.price=v;scheduleSave(`Prix "${item.name}" modifié`);});
+    const tg=makeToggle(item.active,v=>{item.active=v;renderCatPage(cat);scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
+    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;sub.items=sub.items.filter(i=>i!==item);renderCatPage(cat);scheduleSave(`"${item.name}" supprimé`);});
+    row.appendChild(nd);row.appendChild(pi);row.appendChild(tg);row.appendChild(db);
     body.appendChild(row);
   });
-  const ar=document.createElement('div'); ar.className='add-row';
-  const ni=document.createElement('input'); ni.className='inp inp-wide'; ni.placeholder='Nom du vin…';
-  const sel=document.createElement('select'); sel.className='inp'; sel.style.width='90px';
-  ['Rouge','Blanc','Rosé'].forEach(t=>{const o=document.createElement('option');o.textContent=t;sel.appendChild(o);});
-  const np12=document.createElement('input'); np12.className='inp inp-price'; np12.type='number'; np12.step='0.5'; np12.placeholder='12cl';
-  const npbt=document.createElement('input'); npbt.className='inp inp-price'; npbt.type='number'; npbt.step='0.5'; npbt.placeholder='btl';
-  const ab=document.createElement('button'); ab.className='btn-add'; ab.textContent='+ Ajouter';
-  ab.onclick=()=>{
-    const n=ni.value.trim();if(!n)return;
-    D.vins.items.push({id:'v'+uid(),name:n,type:sel.value,active:true,price12:parseFloat(np12.value)||0,priceBt:parseFloat(npbt.value)||0});
-    ni.value='';np12.value='';npbt.value='';renderVins();scheduleSave(`"${n}" ajouté aux vins`);
-  };
-  ar.appendChild(ni);ar.appendChild(sel);ar.appendChild(np12);ar.appendChild(npbt);ar.appendChild(ab);
-  body.appendChild(ar); el.appendChild(card);
+  body.appendChild(buildAddSimple(sub,()=>renderCatPage(cat)));
+  return card;
 }
 
-// ══ SETTINGS ══
+function deleteSubsection(catId,si){
+  const cat=D.categories.find(c=>c.id===catId);
+  if(!cat||!cat.subsections) return;
+  if(!confirm(`Supprimer la sous-section "${cat.subsections[si].label}" et tous ses articles ?`)) return;
+  cat.subsections.splice(si,1);
+  renderCatPage(cat);scheduleSave('Sous-section supprimée');
+}
+
+function buildAddSimple(target,refresh){
+  const ni=makeInp("Nom de l'article…");
+  const nd=makeInp('Description (optionnel)','inp inp-wide');
+  const np=makeInp('Prix','inp inp-price');np.type='number';np.step='0.5';
+  const ab=makeBtn('+ Ajouter','btn-add',()=>{
+    const n=ni.value.trim();if(!n)return;
+    const item={id:'i_'+uid(),name:n,active:true,price:parseFloat(np.value)||0};
+    if(nd.value.trim()) item.desc=nd.value.trim();
+    if(!target.items) target.items=[];
+    target.items.push(item);
+    ni.value='';nd.value='';np.value='';
+    refresh();scheduleSave(`"${n}" ajouté`);
+  });
+  return makeAddRow(ni,nd,np,ab);
+}
+
+// Card double prix
+function buildDoubleCard(cat){
+  const {card,body}=makeCard2(cat.label,`<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:78px;text-align:center">${cat.col1||'Prix 1'}</span><span style="min-width:78px;text-align:center">${cat.col2||'Prix 2'}</span></div>`);
+  (cat.items||[]).forEach(item=>{
+    const row=makeRow('1fr 78px 78px 34px 26px',!item.active);
+    const nd=document.createElement('div');nd.innerHTML=`<div class="row-name">${item.name}</div>`;
+    const p1=document.createElement('input');p1.className='inp inp-price';p1.type='number';p1.step='0.1';p1.value=fmtP(item.price1);p1.placeholder='—';
+    p1.onchange=()=>{item.price1=parseFloat(p1.value)||null;scheduleSave(`Prix "${item.name}" modifié`);};
+    const p2=document.createElement('input');p2.className='inp inp-price';p2.type='number';p2.step='0.1';p2.value=fmtP(item.price2);p2.placeholder='—';
+    p2.onchange=()=>{item.price2=parseFloat(p2.value)||null;scheduleSave(`Prix "${item.name}" modifié`);};
+    const tg=makeToggle(item.active,v=>{item.active=v;renderCatPage(cat);scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
+    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;cat.items=cat.items.filter(i=>i!==item);renderCatPage(cat);scheduleSave(`"${item.name}" supprimé`);});
+    row.appendChild(nd);row.appendChild(p1);row.appendChild(p2);row.appendChild(tg);row.appendChild(db);
+    body.appendChild(row);
+  });
+  const ni=makeInp('Nom…');
+  const np1=makeInp(cat.col1||'Prix 1','inp inp-price');np1.type='number';np1.step='0.1';
+  const np2=makeInp(cat.col2||'Prix 2','inp inp-price');np2.type='number';np2.step='0.1';
+  const ab=makeBtn('+ Ajouter','btn-add',()=>{
+    const n=ni.value.trim();if(!n)return;
+    cat.items.push({id:'i_'+uid(),name:n,active:true,price1:parseFloat(np1.value)||null,price2:parseFloat(np2.value)||null});
+    ni.value='';np1.value='';np2.value='';renderCatPage(cat);scheduleSave(`"${n}" ajouté`);
+  });
+  body.appendChild(makeAddRow(ni,np1,np2,ab));
+  return card;
+}
+
+// Card formule
+function buildFormuleCard(cat){
+  const {card,body}=makeCard2(cat.label);
+  (cat.items||[]).forEach(item=>{
+    const row=makeRow('1fr 1fr 78px 34px 26px',!item.active);
+    const nd=document.createElement('div');nd.innerHTML=`<div class="row-name">${item.name}</div>`;
+    const di=document.createElement('input');di.className='inp inp-wide';di.value=item.desc||'';di.placeholder='Description…';
+    di.onchange=()=>{item.desc=di.value;scheduleSave(`Description "${item.name}" modifiée`);};
+    const pi=makePriceInput(item.price,v=>{item.price=v;scheduleSave(`Prix "${item.name}" modifié`);});
+    const tg=makeToggle(item.active,v=>{item.active=v;renderCatPage(cat);scheduleSave(`"${item.name}" ${v?'activé':'masqué'}`);});
+    const db=makeDelBtn(()=>{if(!confirm(`Supprimer "${item.name}" ?`))return;cat.items=cat.items.filter(i=>i!==item);renderCatPage(cat);scheduleSave(`"${item.name}" supprimé`);});
+    row.appendChild(nd);row.appendChild(di);row.appendChild(pi);row.appendChild(tg);row.appendChild(db);
+    body.appendChild(row);
+  });
+  const ni=makeInp('Nom de la formule…');
+  const di=makeInp('Description…');
+  const np=makeInp('Prix','inp inp-price');np.type='number';np.step='1';
+  const ab=makeBtn('+ Ajouter','btn-add',()=>{
+    const n=ni.value.trim();if(!n)return;
+    cat.items.push({id:'i_'+uid(),name:n,desc:di.value.trim(),active:true,price:parseFloat(np.value)||0});
+    ni.value='';di.value='';np.value='';renderCatPage(cat);scheduleSave(`Formule "${n}" ajoutée`);
+  });
+  body.appendChild(makeAddRow(ni,di,np,ab));
+  return card;
+}
+
+function makeCard2(title,extraHead=''){
+  const c=document.createElement('div');c.className='card';
+  c.innerHTML=`<div class="card-head"><span class="card-title">${title}</span>${extraHead?`<div>${extraHead}</div>`:''}</div>`;
+  const b=document.createElement('div');b.className='card-body';c.appendChild(b);
+  return{card:c,body:b};
+}
+
+// ── SETTINGS ──
 async function changePwd(){
   const p1=document.getElementById('new-pwd').value;
   const p2=document.getElementById('new-pwd2').value;
-  if(!p1){ alert('Mot de passe vide.'); return; }
-  if(p1!==p2){ alert('Les mots de passe ne correspondent pas.'); return; }
-  // Hash avant stockage — le mot de passe en clair ne sera jamais dans menu.json
-  D.admin_password = await sha256(p1);
+  if(!p1){alert('Mot de passe vide.');return;}
+  if(p1!==p2){alert('Les mots de passe ne correspondent pas.');return;}
+  D.admin_password=await sha256(p1);
   document.getElementById('new-pwd').value='';
   document.getElementById('new-pwd2').value='';
   scheduleSave('Mot de passe admin modifié');
-  alert('Mot de passe modifié et sauvegardé !');
+  alert('Mot de passe modifié !');
 }
-
 function changeToken(){
   const t=document.getElementById('new-token').value.trim();
-  if(!t){ alert('Token vide.'); return; }
-  TOKEN=t; localStorage.setItem('chalet_token',t);
+  if(!t){alert('Token vide.');return;}
+  TOKEN=t;localStorage.setItem('chalet_token',t);
   document.getElementById('new-token').value='';
-  alert('Token mis à jour dans votre navigateur.');
+  alert('Token mis à jour.');
 }
 
-// ══ INIT ══
+// ── INIT ──
 function initAll(){
   renderDashboard();
-  renderFraiches();
-  renderPression();
-  renderSimple('bouteilles','c-bouteilles');
-  renderVins();
-  renderSimple('aperitifs','c-aperitifs');
-  renderSimple('alcools','c-alcools');
-  renderSimple('chaud','c-chaud');
-  renderSimple('faims','c-faims',{desc:true});
-  renderSimple('formules','c-formules',{desc:true});
+  renderNavCats();
+  renderCatManage();
 }
 </script>
 </body>
