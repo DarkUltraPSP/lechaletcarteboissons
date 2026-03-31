@@ -808,6 +808,26 @@ async function changePwd() {
   } catch (e) { alert('Erreur : ' + e.message); }
 }
 
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('visible');
+  hamburger.classList.toggle('open');
+}
+
+function closeSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+
+  sidebar.classList.remove('open');
+  overlay.classList.remove('visible');
+  hamburger.classList.remove('open');
+}
+
 // ══ INIT ══
 function initAll() {
   renderDashboard(); renderNavCats(); renderCatManage();
