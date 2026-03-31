@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Chalet Bar — Carte à imprimer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════
+   VARIABLES
+═══════════════════════════════ */
+:root{
+  --gold:#B8922A;--gold-l:#D4AC50;--gold-d:#8A6B1F;
+  --dark:#1C130A;--dark2:#241A0C;--dark3:#2F2010;
+  --cream:#F4ECD8;--cream2:#E8D9BB;--muted:#8A7355;
+}
+
+/* ═══════════════════════════════
+   ÉCRAN — barre de contrôle
+═══════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:#2a2a2a;
+  font-family:'EB Garamond',serif;
+}
+
+/* Barre du haut — masquée à l'impression */
+#toolbar{
+  background:#1a1a1a;
+  padding:12px 24px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  border-bottom:1px solid #333;
+}
+#toolbar-title{
+  font-family:'Cinzel',serif;
+  font-size:13px;
+  letter-spacing:0.2em;
+  color:var(--gold);
+  flex:1;
+}
+#toolbar-info{
+  font-size:12px;
+  color:#666;
+  font-style:italic;
+}
+.btn-print{
+  padding:9px 20px;
+  background:var(--gold);
+  color:#1a1a1a;
+  border:none;
+  border-radius:6px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  letter-spacing:0.05em;
+  transition:background 0.15s;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.btn-print:hover{background:var(--gold-l)}
+.btn-close{
+  padding:9px 16px;
+  background:transparent;
+  color:#666;
+  border:1px solid #333;
+  border-radius:6px;
+  font-size:13px;
+  cursor:pointer;
+  transition:all 0.15s;
+}
+.btn-close:hover{background:#252525;color:#aaa}
+
+/* Loading */
+#loading{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:60vh;gap:16px;
+}
+.loader{width:36px;height:36px;border:2px solid rgba(184,146,42,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+.loader-text{font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.3em;color:var(--gold-d)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Conteneur des pages */
+#pages{
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:24px;
+}
+
+/* ═══════════════════════════════
+   PAGE A5 (148 × 210 mm)
+═══════════════════════════════ */
+.page{
+  width:148mm;
+  min-height:210mm;
+  background:var(--dark2);
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,0.5);
+}
+
+/* Bordure dorée + coins */
+.page::before{
+  content:'';position:absolute;inset:4mm;
+  border:0.5px solid rgba(184,146,42,0.3);
+  pointer-events:none;z-index:10;
+}
+.page::after{
+  content:'';position:absolute;inset:4mm;
+  background:
+    linear-gradient(to bottom right,rgba(184,146,42,0.5) 10px,transparent 10px) top left/10px 10px no-repeat,
+    linear-gradient(to bottom left, rgba(184,146,42,0.5) 10px,transparent 10px) top right/10px 10px no-repeat,
+    linear-gradient(to top right,   rgba(184,146,42,0.5) 10px,transparent 10px) bottom left/10px 10px no-repeat,
+    linear-gradient(to top left,    rgba(184,146,42,0.5) 10px,transparent 10px) bottom right/10px 10px no-repeat;
+  pointer-events:none;z-index:10;
+}
+
+.page-inner{
+  padding:10mm 9mm 8mm;
+  min-height:210mm;
+  display:flex;
+  flex-direction:column;
+  background-image:
+    radial-gradient(ellipse at 20% 0%,rgba(90,55,15,0.2) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 100%,rgba(50,30,5,0.25) 0%,transparent 60%);
+}
+
+/* ═══════════════════════════════
+   COUVERTURE
+═══════════════════════════════ */
+.cover{
+  flex:1;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;gap:0;
+}
+.cover-ornament{width:70mm;opacity:0.45;margin:6mm 0}
+.cover-name{
+  font-family:'Cinzel',serif;font-size:24pt;
+  letter-spacing:0.2em;color:var(--gold-l);line-height:1;
+}
+.cover-sub{
+  font-family:'Cinzel',serif;font-size:7pt;
+  letter-spacing:0.6em;color:var(--gold);margin-top:2mm;
+}
+.cover-rule{
+  width:28mm;height:0.5px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  margin:5mm auto;
+}
+.cover-tagline{
+  font-family:'EB Garamond',serif;font-style:italic;
+  font-size:9pt;color:var(--muted);letter-spacing:0.05em;
+}
+
+/* ═══════════════════════════════
+   CONTENU — typographie
+═══════════════════════════════ */
+.p-sec{
+  text-align:center;margin:4mm 0 3mm;position:relative;
+}
+.p-sec-line{
+  position:absolute;top:50%;left:0;right:0;
+  height:0.5px;background:rgba(184,146,42,0.3);
+}
+.p-sec-title{
+  font-family:'Cinzel',serif;font-size:7pt;letter-spacing:0.35em;
+  color:var(--gold);background:var(--dark2);
+  padding:0 8px;position:relative;z-index:1;text-transform:uppercase;
+}
+
+.p-item{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:1.8mm 0;border-bottom:0.5px solid rgba(184,146,42,0.1);gap:6mm;
+}
+.p-item-name{font-size:8.5pt;color:var(--cream);flex:1;line-height:1.3}
+.p-item-desc{font-size:7pt;color:var(--muted);font-style:italic;margin-top:0.5mm}
+.p-price{
+  font-family:'Playfair Display',serif;font-size:8pt;
+  color:var(--gold-l);white-space:nowrap;text-align:right;
+}
+
+.p-col-header{
+  display:flex;justify-content:flex-end;gap:16px;
+  margin-bottom:2mm;border-bottom:0.5px solid rgba(184,146,42,0.2);padding-bottom:1mm;
+}
+.p-col-header span{
+  font-family:'Cinzel',serif;font-size:6pt;letter-spacing:0.2em;
+  color:var(--gold-d);min-width:40px;text-align:center;
+}
+.p-prices2{display:flex;gap:16px}
+.p-prices2 span{
+  font-family:'Playfair Display',serif;font-size:8pt;
+  color:var(--gold-l);min-width:40px;text-align:center;
+}
+.p-ardoise{font-style:italic;font-size:7pt;color:var(--muted)}
+
+.p-sub-label{
+  font-size:7pt;color:var(--gold-d);font-style:italic;margin:2.5mm 0 1mm;
+}
+
+.p-formule{
+  border:0.5px solid rgba(184,146,42,0.35);border-radius:2mm;
+  padding:2mm 3mm;margin:2mm 0;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.p-formule-name{font-family:'Playfair Display',serif;font-style:italic;font-size:9pt;color:var(--gold-l)}
+.p-formule-detail{font-size:7pt;color:var(--muted);font-style:italic;margin-top:0.5mm}
+.p-formule-price{font-family:'Cinzel',serif;font-size:11pt;color:var(--gold);white-space:nowrap}
+
+.p-hr{
+  height:0.5px;
+  background:linear-gradient(to right,transparent,rgba(184,146,42,0.25),transparent);
+  margin:3mm 0;
+}
+
+.p-footer{
+  margin-top:auto;padding-top:3mm;
+  border-top:0.5px solid rgba(184,146,42,0.2);
+  text-align:center;
+}
+.p-footer p{font-size:6pt;color:var(--muted);font-style:italic;line-height:1.8;opacity:0.8}
+
+/* ═══════════════════════════════
+   IMPRESSION
+═══════════════════════════════ */
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:none}
+  #toolbar{display:none}
+  #pages{padding:0;gap:0}
+  #loading{display:none}
+  .page{
+    width:148mm;min-height:210mm;
+    box-shadow:none;
+    page-break-after:always;
+    break-after:page;
+  }
+  .page:last-child{page-break-after:avoid;break-after:avoid}
+  @page{size:A5 portrait;margin:0}
+}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <div id="toolbar-title">Le Chalet Bar — Carte à imprimer</div>
+  <div id="toolbar-info"></div>
+  <button class="btn-close" onclick="window.close()">✕ Fermer</button>
+  <button class="btn-print" onclick="window.print()">🖨 Imprimer</button>
+</div>
+
+<div id="loading">
+  <div class="loader"></div>
+  <div class="loader-text">Génération de la carte…</div>
+</div>
+
+<div id="pages"></div>
+
+<script>
+const RAW = 'https://raw.githubusercontent.com/DarkUltraPSP/lechaletcarteboissons/main/menu.json';
+
+function fmt(p){
+  if(p===null||p===undefined) return '<span class="p-ardoise">ardoise</span>';
+  return parseFloat(p).toFixed(2).replace('.',',')+'\u00a0€';
+}
+
+function sec(label){
+  return `<div class="p-sec"><div class="p-sec-line"></div><span class="p-sec-title">${label}</span></div>`;
+}
+function hr(){ return '<div class="p-hr"></div>'; }
+
+function itemSimple(i){
+  return `<div class="p-item">
+    <div class="p-item-name">${i.name}${i.desc?`<div class="p-item-desc">${i.desc}</div>`:''}</div>
+    <div class="p-price">${fmt(i.price)}</div>
+  </div>`;
+}
+
+function itemDouble(i, cat){
+  const p1 = i.price1!=null ? fmt(i.price1) : '<span class="p-ardoise">ardoise</span>';
+  const p2 = i.price2!=null ? fmt(i.price2) : '';
+  return `<div class="p-item">
+    <div class="p-item-name">${i.name}</div>
+    <div class="p-prices2"><span>${p1}</span><span>${p2}</span></div>
+  </div>`;
+}
+
+function renderCatContent(cat){
+  let h = '';
+  if(cat.type==='simple'){
+    if(cat.subsections){
+      cat.subsections.forEach(sub=>{
+        h += `<div class="p-sub-label">${sub.label}</div>`;
+        sub.items.filter(i=>i.active).forEach(i=>{ h += itemSimple(i); });
+      });
+    } else {
+      (cat.items||[]).filter(i=>i.active).forEach(i=>{ h += itemSimple(i); });
+    }
+  } else if(cat.type==='double_prix'){
+    h += `<div class="p-col-header"><span>${cat.col1||''}</span><span>${cat.col2||''}</span></div>`;
+    (cat.items||[]).filter(i=>i.active).forEach(i=>{ h += itemDouble(i,cat); });
+  } else if(cat.type==='formule'){
+    (cat.items||[]).filter(i=>i.active).forEach(i=>{
+      h += `<div class="p-formule">
+        <div><div class="p-formule-name">${i.name}</div>${i.desc?`<div class="p-formule-detail">${i.desc}</div>`:''}</div>
+        <div class="p-formule-price">${fmt(i.price)}</div>
+      </div>`;
+    });
+  }
+  return h;
+}
+
+// Ornement SVG
+const ornement = `<svg width="70mm" height="6mm" viewBox="0 0 264 23" xmlns="http://www.w3.org/2000/svg">
+  <line x1="0" y1="11" x2="110" y2="11" stroke="#B8922A" stroke-width="0.7"/>
+  <circle cx="120" cy="11" r="3" fill="none" stroke="#B8922A" stroke-width="0.8"/>
+  <circle cx="132" cy="11" r="5" fill="none" stroke="#B8922A" stroke-width="0.8"/>
+  <circle cx="144" cy="11" r="3" fill="none" stroke="#B8922A" stroke-width="0.8"/>
+  <line x1="154" y1="11" x2="264" y2="11" stroke="#B8922A" stroke-width="0.7"/>
+</svg>`;
+
+const logoSVG = `<svg width="38mm" height="28mm" viewBox="0 0 160 110" fill="none">
+  <path d="M80 8A72 72 0 0 1 152 80" stroke="#B8922A" stroke-width="1.5" fill="none"/>
+  <path d="M8 80A72 72 0 0 1 80 8" stroke="#B8922A" stroke-width="1.5" fill="none"/>
+  <path d="M8 80A72 72 0 0 0 152 80" stroke="#B8922A" stroke-width="1.5" fill="none"/>
+  <polyline points="10,75 35,38 52,55 80,18 108,55 125,38 150,75" stroke="#C9A84C" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <polyline points="48,92 80,65 112,92" stroke="#C9A84C" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+</svg>`;
+
+function makePage(content){
+  return `<div class="page"><div class="page-inner">${content}</div></div>`;
+}
+
+// Découpage intelligent des catégories en pages
+// Chaque page fait ~170mm de contenu utile (210 - marges - bordures - footer)
+// On estime la hauteur de chaque bloc et on coupe si ça dépasse
+const CAT_HEIGHTS = {
+  sec: 9,       // titre de section (mm)
+  sub_label: 5, // sous-titre
+  item: 5,      // ligne article
+  formule: 12,  // encart formule
+  hr: 6,        // séparateur
+  col_header: 5,
+};
+const PAGE_HEIGHT = 160; // mm disponibles par page (hors couverture et footer)
+const FOOTER_H = 14;
+
+function estimateHeight(cat){
+  let h = CAT_HEIGHTS.sec;
+  if(cat.type==='simple'){
+    if(cat.subsections){
+      cat.subsections.forEach(sub=>{
+        h += CAT_HEIGHTS.sub_label;
+        h += sub.items.filter(i=>i.active).length * CAT_HEIGHTS.item;
+      });
+    } else {
+      h += (cat.items||[]).filter(i=>i.active).length * CAT_HEIGHTS.item;
+    }
+  } else if(cat.type==='double_prix'){
+    h += CAT_HEIGHTS.col_header;
+    h += (cat.items||[]).filter(i=>i.active).length * CAT_HEIGHTS.item;
+  } else if(cat.type==='formule'){
+    h += (cat.items||[]).filter(i=>i.active).length * CAT_HEIGHTS.formule;
+  }
+  return h;
+}
+
+async function load(){
+  try{
+    const res = await fetch(RAW+'?t='+Date.now());
+    if(!res.ok) throw new Error();
+    const D = await res.json();
+    const cats = (D.categories||[]).filter(c=>c.active);
+    const pages = [];
+
+    // Page 1 : couverture
+    pages.push(makePage(`
+      <div class="cover">
+        <div class="cover-ornament">${ornement}</div>
+        ${logoSVG}
+        <div class="cover-name">Le Chalet</div>
+        <div class="cover-sub">Bar</div>
+        <div class="cover-rule"></div>
+        <div class="cover-tagline">Carte des Boissons</div>
+        <div class="cover-ornament">${ornement}</div>
+      </div>
+    `));
+
+    // Pages suivantes : contenu découpé
+    let currentContent = '';
+    let currentH = 0;
+    let firstOnPage = true;
+
+    function flushPage(){
+      if(!currentContent.trim()) return;
+      pages.push(makePage(`
+        ${currentContent}
+        <div class="p-footer">
+          <p>Prix nets, service compris</p>
+          <p>L'abus d'alcool est dangereux pour la santé — À consommer avec modération</p>
+        </div>
+      `));
+      currentContent = '';
+      currentH = FOOTER_H;
+      firstOnPage = true;
+    }
+
+    currentH = FOOTER_H;
+
+    cats.forEach((cat, idx) => {
+      const catH = estimateHeight(cat) + (firstOnPage ? 0 : CAT_HEIGHTS.hr);
+
+      // Si la catégorie ne rentre pas dans la page courante → nouvelle page
+      if(!firstOnPage && currentH + catH > PAGE_HEIGHT){
+        flushPage();
+      }
+
+      if(!firstOnPage){
+        currentContent += hr();
+        currentH += CAT_HEIGHTS.hr;
+      }
+
+      currentContent += sec(cat.label);
+      currentContent += renderCatContent(cat);
+      currentH += estimateHeight(cat);
+      firstOnPage = false;
+    });
+
+    flushPage();
+
+    // Dernière page : page de fermeture (optionnel)
+    pages.push(makePage(`
+      <div class="cover">
+        <div class="cover-ornament">${ornement}</div>
+        ${logoSVG}
+        <div class="cover-name">Le Chalet</div>
+        <div class="cover-sub">Bar</div>
+        <div class="cover-rule"></div>
+        <div class="cover-tagline" style="color:var(--muted);font-size:8pt">Cocktails &amp; Shooters — voir ardoise du moment</div>
+        <div class="cover-ornament" style="margin-top:8mm">${ornement}</div>
+        <div style="font-size:7pt;color:rgba(138,115,85,0.5);margin-top:4mm;font-style:italic">Prix nets, service compris</div>
+      </div>
+    `));
+
+    document.getElementById('pages').innerHTML = pages.join('');
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('toolbar-info').textContent = `${pages.length} pages · Format A5`;
+
+  }catch(e){
+    document.getElementById('loading').innerHTML = '<div style="color:#8A7355;font-family:Cinzel,serif;font-size:11px;letter-spacing:0.2em;text-align:center">ERREUR DE CHARGEMENT</div>';
+  }
+}
+
+load();
+</script>
+</body>
+</html>
