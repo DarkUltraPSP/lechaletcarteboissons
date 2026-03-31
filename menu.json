@@ -10,31 +10,101 @@
           "id": "sodas33",
           "label": "Sodas 33 cl",
           "items": [
-            { "id": "f1", "name": "Coca-Cola", "active": true, "price": 4.00 },
-            { "id": "f2", "name": "Coca Zéro", "active": true, "price": 4.00 },
-            { "id": "f3", "name": "Coca Cherry", "active": true, "price": 4.00 },
-            { "id": "f4", "name": "Perrier", "active": true, "price": 4.00 }
+            {
+              "id": "f1",
+              "name": "Coca-Cola",
+              "active": true,
+              "price": 4,
+              "desc": ""
+            },
+            {
+              "id": "f2",
+              "name": "Coca Zéro",
+              "active": true,
+              "price": 4
+            },
+            {
+              "id": "f3",
+              "name": "Coca Cherry",
+              "active": true,
+              "price": 4
+            },
+            {
+              "id": "f4",
+              "name": "Perrier",
+              "active": true,
+              "price": 4
+            }
           ]
         },
         {
           "id": "sodas25",
           "label": "Sodas 25 cl",
           "items": [
-            { "id": "f5", "name": "Fuzetea Pêche", "active": true, "price": 4.00 },
-            { "id": "f6", "name": "Limonade", "active": true, "price": 4.00 },
-            { "id": "f7", "name": "Schwepps Tonic", "active": true, "price": 4.00 },
-            { "id": "f8", "name": "Schwepps Agrumes", "active": true, "price": 4.00 },
-            { "id": "f9", "name": "Orangina", "active": true, "price": 4.00 }
+            {
+              "id": "f5",
+              "name": "Fuzetea Pêche",
+              "active": true,
+              "price": 4
+            },
+            {
+              "id": "f6",
+              "name": "Limonade",
+              "active": true,
+              "price": 4
+            },
+            {
+              "id": "f7",
+              "name": "Schwepps Tonic",
+              "active": true,
+              "price": 4
+            },
+            {
+              "id": "f8",
+              "name": "Schwepps Agrumes",
+              "active": true,
+              "price": 4
+            },
+            {
+              "id": "f9",
+              "name": "Orangina",
+              "active": true,
+              "price": 4
+            }
           ]
         },
         {
           "id": "autres",
           "label": "Autres",
           "items": [
-            { "id": "f10", "name": "Red Bull", "active": true, "price": 5.00, "desc": "25 cl" },
-            { "id": "f11", "name": "Jus de Fruits Solera", "active": true, "price": 3.50, "desc": "25 cl — Orange, Pomme, Abricot, Ananas, Pamplemousse, Tomate" },
-            { "id": "f12", "name": "Sirop à l'eau", "active": true, "price": 2.50, "desc": "25 cl — Menthe, Grenadine, Cerise, Fraise, Citron, Violette, Peche" },
-            { "id": "f13", "name": "Diabolo", "active": true, "price": 3.50, "desc": "25 cl — Menthe, Grenadine, Fraise, Citron" }
+            {
+              "id": "f10",
+              "name": "Red Bull",
+              "active": true,
+              "price": 5,
+              "desc": "25 cl"
+            },
+            {
+              "id": "f11",
+              "name": "Jus de Fruits Solera",
+              "active": true,
+              "price": 3.5,
+              "desc": "25 cl — Orange, Pomme, Abricot, Ananas, Pamplemousse, Tomate"
+            },
+            {
+              "id": "f12",
+              "name": "Sirop à l'eau",
+              "active": true,
+              "price": 2.5,
+              "desc": "25 cl — Menthe, Grenadine, Cerise, Fraise, Citron, Violette, Peche"
+            },
+            {
+              "id": "f13",
+              "name": "Diabolo",
+              "active": true,
+              "price": 3.5,
+              "desc": "25 cl — Menthe, Grenadine, Fraise, Citron"
+            }
           ]
         }
       ]
@@ -47,13 +117,55 @@
       "col1": "25 cl",
       "col2": "50 cl",
       "items": [
-        { "id": "p1", "name": "Mont Blanc Cristal", "active": true, "price1": 3.80, "price2": 7.60 },
-        { "id": "p2", "name": "Mont Blanc La Verte au Genepi", "active": true, "price1": 4.20, "price2": 8.00 },
-        { "id": "p3", "name": "Biere du Moment", "active": true, "price1": null, "price2": null },
-        { "id": "p4", "name": "Picon Biere", "active": true, "price1": 4.20, "price2": 8.00 },
-        { "id": "p5", "name": "Monaco", "active": true, "price1": 3.80, "price2": 7.50 },
-        { "id": "p6", "name": "Panache", "active": true, "price1": 3.60, "price2": 7.00 },
-        { "id": "p7", "name": "Demi Sirop", "active": true, "price1": 4.00, "price2": 7.80 }
+        {
+          "id": "p1",
+          "name": "Mont Blanc Cristal",
+          "active": true,
+          "price1": 3.8,
+          "price2": 7.6
+        },
+        {
+          "id": "p2",
+          "name": "Mont Blanc La Verte au Genepi",
+          "active": true,
+          "price1": 4.2,
+          "price2": 8
+        },
+        {
+          "id": "p3",
+          "name": "Biere du Moment",
+          "active": true,
+          "price1": null,
+          "price2": null
+        },
+        {
+          "id": "p4",
+          "name": "Picon Biere",
+          "active": true,
+          "price1": 4.2,
+          "price2": 8
+        },
+        {
+          "id": "p5",
+          "name": "Monaco",
+          "active": true,
+          "price1": 3.8,
+          "price2": 7.5
+        },
+        {
+          "id": "p6",
+          "name": "Panache",
+          "active": true,
+          "price1": 3.6,
+          "price2": 7
+        },
+        {
+          "id": "p7",
+          "name": "Demi Sirop",
+          "active": true,
+          "price1": 4,
+          "price2": 7.8
+        }
       ]
     },
     {
@@ -62,10 +174,30 @@
       "type": "simple",
       "active": true,
       "items": [
-        { "id": "b1", "name": "Mont Blanc Myrtille 33cl", "active": true, "price": 5.50 },
-        { "id": "b2", "name": "IPA Mont Blanc 33cl", "active": true, "price": 5.50 },
-        { "id": "b3", "name": "Blanche 33cl", "active": true, "price": 5.50 },
-        { "id": "b4", "name": "Chouffe Sans Alcool 33cl", "active": true, "price": 5.50 }
+        {
+          "id": "b1",
+          "name": "Mont Blanc Myrtille 33cl",
+          "active": true,
+          "price": 5.5
+        },
+        {
+          "id": "b2",
+          "name": "IPA Mont Blanc 33cl",
+          "active": true,
+          "price": 5.5
+        },
+        {
+          "id": "b3",
+          "name": "Blanche 33cl",
+          "active": true,
+          "price": 5.5
+        },
+        {
+          "id": "b4",
+          "name": "Chouffe Sans Alcool 33cl",
+          "active": true,
+          "price": 5.5
+        }
       ]
     },
     {
@@ -76,10 +208,34 @@
       "col1": "12 cl",
       "col2": "Bouteille",
       "items": [
-        { "id": "v1", "name": "Pic Saint-Loup Rouge", "active": true, "price1": 5.00, "price2": 22.00 },
-        { "id": "v2", "name": "Cotes du Rhone Rouge", "active": true, "price1": 5.00, "price2": 22.00 },
-        { "id": "v3", "name": "Albriere Viognier Blanc", "active": true, "price1": 4.00, "price2": 18.00 },
-        { "id": "v4", "name": "Gourmandoise Rose", "active": true, "price1": 4.00, "price2": 18.00 }
+        {
+          "id": "v1",
+          "name": "Pic Saint-Loup Rouge",
+          "active": true,
+          "price1": 5,
+          "price2": 22
+        },
+        {
+          "id": "v2",
+          "name": "Cotes du Rhone Rouge",
+          "active": true,
+          "price1": 5,
+          "price2": 22
+        },
+        {
+          "id": "v3",
+          "name": "Albriere Viognier Blanc",
+          "active": true,
+          "price1": 4,
+          "price2": 18
+        },
+        {
+          "id": "v4",
+          "name": "Gourmandoise Rose",
+          "active": true,
+          "price1": 4,
+          "price2": 18
+        }
       ]
     },
     {
@@ -88,11 +244,38 @@
       "type": "simple",
       "active": true,
       "items": [
-        { "id": "a1", "name": "Ricard", "active": true, "price": 2.50, "desc": "2 cl - 5,00 euro pour 4 cl" },
-        { "id": "a2", "name": "Kir", "active": true, "price": 5.50, "desc": "Mure, Cassis, Myrtille, Chataigne, Peche" },
-        { "id": "a3", "name": "Suze", "active": true, "price": 3.50 },
-        { "id": "a4", "name": "Martini Rouge", "active": true, "price": 3.50 },
-        { "id": "a5", "name": "Martini Blanc", "active": true, "price": 3.50 }
+        {
+          "id": "a1",
+          "name": "Ricard",
+          "active": true,
+          "price": 2.5,
+          "desc": "2 cl - 5,00 euro pour 4 cl"
+        },
+        {
+          "id": "a2",
+          "name": "Kir",
+          "active": true,
+          "price": 5.5,
+          "desc": "Mure, Cassis, Myrtille, Chataigne, Peche"
+        },
+        {
+          "id": "a3",
+          "name": "Suze",
+          "active": true,
+          "price": 3.5
+        },
+        {
+          "id": "a4",
+          "name": "Martini Rouge",
+          "active": true,
+          "price": 3.5
+        },
+        {
+          "id": "a5",
+          "name": "Martini Blanc",
+          "active": true,
+          "price": 3.5
+        }
       ]
     },
     {
@@ -101,19 +284,84 @@
       "type": "simple",
       "active": true,
       "items": [
-        { "id": "al1", "name": "Genepi 4cl", "active": true, "price": 6.00 },
-        { "id": "al2", "name": "Chartreuse 4cl", "active": true, "price": 8.00 },
-        { "id": "al3", "name": "Whisky Ballantines 4cl", "active": true, "price": 5.00 },
-        { "id": "al4", "name": "Whisky Coca", "active": true, "price": 7.00 },
-        { "id": "al5", "name": "Jack Daniels 4cl", "active": true, "price": 6.50 },
-        { "id": "al6", "name": "Jack Coca", "active": true, "price": 8.00 },
-        { "id": "al7", "name": "Jagermeister bombe", "active": true, "price": 7.00 },
-        { "id": "al8", "name": "Gin Tonic", "active": true, "price": 7.00 },
-        { "id": "al9", "name": "Vodka Red Bull", "active": true, "price": 7.00 },
-        { "id": "al10", "name": "Vodka Coca", "active": true, "price": 7.00 },
-        { "id": "al11", "name": "Jet 27 ou 31 4cl", "active": true, "price": 5.00 },
-        { "id": "al12", "name": "Rhum Havana Club Nature", "active": true, "price": 4.80 },
-        { "id": "al13", "name": "Rhum Havana Club Coca", "active": true, "price": 7.00 }
+        {
+          "id": "al1",
+          "name": "Genepi 4cl",
+          "active": true,
+          "price": 6
+        },
+        {
+          "id": "al2",
+          "name": "Chartreuse 4cl",
+          "active": true,
+          "price": 8
+        },
+        {
+          "id": "al3",
+          "name": "Whisky Ballantines 4cl",
+          "active": true,
+          "price": 5
+        },
+        {
+          "id": "al4",
+          "name": "Whisky Coca",
+          "active": true,
+          "price": 7
+        },
+        {
+          "id": "al5",
+          "name": "Jack Daniels 4cl",
+          "active": true,
+          "price": 6.5
+        },
+        {
+          "id": "al6",
+          "name": "Jack Coca",
+          "active": true,
+          "price": 8
+        },
+        {
+          "id": "al7",
+          "name": "Jagermeister bombe",
+          "active": true,
+          "price": 7
+        },
+        {
+          "id": "al8",
+          "name": "Gin Tonic",
+          "active": true,
+          "price": 7
+        },
+        {
+          "id": "al9",
+          "name": "Vodka Red Bull",
+          "active": true,
+          "price": 7
+        },
+        {
+          "id": "al10",
+          "name": "Vodka Coca",
+          "active": true,
+          "price": 7
+        },
+        {
+          "id": "al11",
+          "name": "Jet 27 ou 31 4cl",
+          "active": true,
+          "price": 5
+        },
+        {
+          "id": "al12",
+          "name": "Rhum Havana Club Nature",
+          "active": true,
+          "price": 4.8
+        },
+        {
+          "id": "al13",
+          "name": "Rhum Havana Club Coca",
+          "active": true,
+          "price": 7
+        }
       ]
     },
     {
@@ -122,7 +370,12 @@
       "type": "simple",
       "active": true,
       "items": [
-        { "id": "c1", "name": "Cafe", "active": true, "price": 1.50 }
+        {
+          "id": "c1",
+          "name": "Cafe",
+          "active": true,
+          "price": 1.5
+        }
       ]
     },
     {
@@ -131,9 +384,27 @@
       "type": "simple",
       "active": true,
       "items": [
-        { "id": "fm1", "name": "Saucissons au choix", "active": true, "price": 6.00, "desc": "Selon arrivage" },
-        { "id": "fm2", "name": "Terrines au choix", "active": true, "price": 8.00, "desc": "Servis avec croutons selon arrivage" },
-        { "id": "fm3", "name": "Planche Tapenades", "active": true, "price": 7.00, "desc": "Servie avec croutons" }
+        {
+          "id": "fm1",
+          "name": "Saucissons au choix",
+          "active": true,
+          "price": 6,
+          "desc": "Selon arrivage"
+        },
+        {
+          "id": "fm2",
+          "name": "Terrines au choix",
+          "active": true,
+          "price": 8,
+          "desc": "Servis avec croutons selon arrivage"
+        },
+        {
+          "id": "fm3",
+          "name": "Planche Tapenades",
+          "active": true,
+          "price": 7,
+          "desc": "Servie avec croutons"
+        }
       ]
     },
     {
@@ -142,8 +413,20 @@
       "type": "formule",
       "active": true,
       "items": [
-        { "id": "fo1", "name": "Formule Apero Chalet", "active": true, "price": 18.00, "desc": "Planche Tapenade + 1 Cocktail" },
-        { "id": "fo2", "name": "Formule Montagne", "active": true, "price": 30.00, "desc": "Planche Tapenade + 2 Cocktails" }
+        {
+          "id": "fo1",
+          "name": "Formule Apero Chalet",
+          "active": true,
+          "price": 18,
+          "desc": "Planche Tapenade + 1 Cocktail"
+        },
+        {
+          "id": "fo2",
+          "name": "Formule Montagne",
+          "active": true,
+          "price": 30,
+          "desc": "Planche Tapenade + 2 Cocktails"
+        }
       ]
     }
   ]
