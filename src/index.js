@@ -12,6 +12,47 @@ const ALLOWED_ORIGINS = [
   'http://localhost:8787',
 ];
 
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+};
+
+function validateMenuData(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return 'data invalide';
+  if (!Array.isArray(data.categories)) return 'categories manquant ou invalide';
+  for (const cat of data.categories) {
+    if (typeof cat.id !== 'string' || !cat.id) return 'categorie.id invalide';
+    if (typeof cat.label !== 'string') return 'categorie.label invalide';
+    if (!['simple', 'double_prix'].includes(cat.type)) return `categorie.type invalide: ${cat.type}`;
+    if (typeof cat.active !== 'boolean') return 'categorie.active invalide';
+    if (cat.type === 'double_prix') {
+      if (!Array.isArray(cat.items)) return `categorie "${cat.id}": items manquant`;
+      for (const item of cat.items) {
+        if (typeof item.id !== 'string' || !item.id) return 'item.id invalide';
+        if (typeof item.name !== 'string') return 'item.name invalide';
+        if (typeof item.active !== 'boolean') return 'item.active invalide';
+        if (item.price1 !== null && item.price1 !== undefined && typeof item.price1 !== 'number') return 'item.price1 invalide';
+        if (item.price2 !== null && item.price2 !== undefined && typeof item.price2 !== 'number') return 'item.price2 invalide';
+      }
+    } else {
+      if (!Array.isArray(cat.subsections)) return `categorie "${cat.id}": subsections manquant`;
+      for (const sub of cat.subsections) {
+        if (typeof sub.id !== 'string' || !sub.id) return 'subsection.id invalide';
+        if (typeof sub.label !== 'string') return 'subsection.label invalide';
+        if (!Array.isArray(sub.items)) return `subsection "${sub.id}": items manquant`;
+        for (const item of sub.items) {
+          if (typeof item.id !== 'string' || !item.id) return 'item.id invalide';
+          if (typeof item.name !== 'string') return 'item.name invalide';
+          if (typeof item.active !== 'boolean') return 'item.active invalide';
+          if (item.price !== undefined && item.price !== null && typeof item.price !== 'number') return 'item.price invalide';
+        }
+      }
+    }
+  }
+  return null;
+}
+
 function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '';
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -27,7 +68,7 @@ function corsHeaders(request) {
 function json(data, status = 200, request) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders(request), 'Content-Type': 'application/json' },
+    headers: { ...corsHeaders(request), ...SECURITY_HEADERS, 'Content-Type': 'application/json' },
   });
 }
 
@@ -237,6 +278,8 @@ export default {
       if (!payload) return err('Non autorisé.', 401, request);
       try {
         const { data, sha, message } = await request.json();
+        const validationError = validateMenuData(data);
+        if (validationError) return err(validationError, 400, request);
         // Récupérer le vrai menu.json pour conserver le hash du mdp
         const gh = await ghGet(env);
         const current = JSON.parse(b64dec(gh.content));
