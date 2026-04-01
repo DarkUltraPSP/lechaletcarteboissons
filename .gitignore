@@ -1,6 +1,7 @@
 # Wrangler
 .wrangler/
 .dev.vars
+wrangler.toml.local
 
 # Node
 node_modules/

@@ -18,7 +18,8 @@ function corsHeaders(request) {
   return {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Credentials': 'true',
     'Vary': 'Origin',
   };
 }
@@ -128,8 +129,9 @@ async function verifyPassword(password, stored) {
 
 // ── Auth middleware ──
 async function requireAuth(request, env) {
-  const auth = request.headers.get('Authorization') || '';
-  const token = auth.replace('Bearer ', '');
+  const cookie = request.headers.get('Cookie') || '';
+  const match = cookie.match(/(?:^|;\s*)chalet_jwt=([^;]+)/);
+  const token = match ? match[1] : '';
   if (!token) return null;
   return await verifyJWT(token, env.JWT_SECRET);
 }
@@ -180,7 +182,7 @@ export default {
 
     // Preflight CORS
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: corsHeaders(request) });
+      return new Response(null, { status: 204, headers: { ...corsHeaders(request), 'Access-Control-Max-Age': '86400' } });
     }
 
     // ── POST /login ──
@@ -203,7 +205,11 @@ export default {
           { sub: 'admin', exp: Math.floor(Date.now() / 1000) + 86400 * 30 }, // 30 jours
           env.JWT_SECRET
         );
-        return json({ token }, 200, request);
+        const cookieHeader = `chalet_jwt=${token}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=2592000`;
+        return new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { ...corsHeaders(request), 'Content-Type': 'application/json', 'Set-Cookie': cookieHeader },
+        });
       } catch (e) { return err(e.message, 500, request); }
     }
 
@@ -257,6 +263,15 @@ export default {
         await ghPut(env, content, gh.sha, 'Mot de passe admin modifié');
         return json({ ok: true }, 200, request);
       } catch (e) { return err(e.message, 500, request); }
+    }
+
+    // ── POST /logout ──
+    if (url.pathname === '/logout' && request.method === 'POST') {
+      const cookieHeader = 'chalet_jwt=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0';
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { ...corsHeaders(request), 'Content-Type': 'application/json', 'Set-Cookie': cookieHeader },
+      });
     }
 
     return err('Route introuvable.', 404, request);

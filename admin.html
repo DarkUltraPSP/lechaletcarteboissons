@@ -357,7 +357,7 @@ const WORKER = 'https://chalet-bar-api.lechaletbar.workers.dev';
 
 function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
 
-let D = null, SHA = null, JWT = null;
+let D = null, SHA = null;
 let HISTORY = JSON.parse(localStorage.getItem('chalet_history3') || '[]');
 let currentCatId = null;
 
@@ -365,9 +365,9 @@ let currentCatId = null;
 async function api(path, method = 'GET', body = null) {
   const opts = {
     method,
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
   };
-  if (JWT) opts.headers['Authorization'] = 'Bearer ' + JWT;
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(WORKER + path, opts);
   const data = await res.json();
@@ -384,9 +384,7 @@ async function doLogin() {
   if (!pwd) { err.textContent = 'Mot de passe requis.'; return; }
   btn.textContent = 'Connexion…'; btn.disabled = true;
   try {
-    const { token } = await api('/login', 'POST', { password: pwd });
-    JWT = token;
-    localStorage.setItem('chalet_jwt', token);
+    await api('/login', 'POST', { password: pwd });
     // Charger les données
     const { data, sha } = await api('/menu');
     D = data; SHA = sha;
@@ -399,8 +397,8 @@ async function doLogin() {
   }
 }
 
-function logout() {
-  localStorage.removeItem('chalet_jwt');
+async function logout() {
+  await api('/logout', 'POST');
   location.reload();
 }
 
@@ -412,20 +410,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('new-cat-col1').style.display = isDbl ? 'block' : 'none';
     document.getElementById('new-cat-col2').style.display = isDbl ? 'block' : 'none';
   });
-  const saved = localStorage.getItem('chalet_jwt');
-  if (saved) {
-    JWT = saved;
-    try {
-      await api('/verify');
-      const { data, sha } = await api('/menu');
-      D = data; SHA = sha;
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      initAll();
-    } catch (e) {
-      localStorage.removeItem('chalet_jwt');
-      JWT = null;
-    }
+  try {
+    await api('/verify');
+    const { data, sha } = await api('/menu');
+    D = data; SHA = sha;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    initAll();
+  } catch (e) {
+    // Pas de cookie valide, on reste sur l'écran de login
   }
 });
 
