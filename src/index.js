@@ -73,6 +73,48 @@ async function sha256(str) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function pbkdf2Hash(password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(password),
+    'PBKDF2', false, ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt, iterations: 200_000, hash: 'SHA-256' },
+    key, 256
+  );
+  const hex = b => Array.from(b).map(x => x.toString(16).padStart(2, '0')).join('');
+  return `pbkdf2:${hex(salt)}:${hex(new Uint8Array(bits))}`;
+}
+
+async function verifyPassword(password, stored) {
+  if (!stored) return false;
+  if (stored.startsWith('pbkdf2:')) {
+    const [, saltHex, hashHex] = stored.split(':');
+    const salt = new Uint8Array(saltHex.match(/.{2}/g).map(h => parseInt(h, 16)));
+    const key = await crypto.subtle.importKey(
+      'raw', new TextEncoder().encode(password),
+      'PBKDF2', false, ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', salt, iterations: 200_000, hash: 'SHA-256' },
+      key, 256
+    );
+    const candidate = Array.from(new Uint8Array(bits)).map(x => x.toString(16).padStart(2, '0')).join('');
+    return timingSafeEqual(candidate, hashHex);
+  }
+  // Rétrocompatibilité : ancien hash SHA-256 brut (env.ADMIN_PASSWORD_HASH)
+  const hash = await sha256(password);
+  return timingSafeEqual(hash, stored);
+}
+
 // ── Auth middleware ──
 async function requireAuth(request, env) {
   const auth = request.headers.get('Authorization') || '';
@@ -135,8 +177,14 @@ export default {
       try {
         const { password } = await request.json();
         if (!password) return err('Mot de passe requis.');
-        const hash = await sha256(password);
-        if (hash !== env.ADMIN_PASSWORD_HASH) return err('Mot de passe incorrect.', 401);
+        // menu.json:admin_password (posé par /change-password) est prioritaire sur env
+        let storedHash = env.ADMIN_PASSWORD_HASH;
+        try {
+          const gh = await ghGet(env);
+          const data = JSON.parse(b64dec(gh.content));
+          if (data.admin_password) storedHash = data.admin_password;
+        } catch { /* env reste le fallback */ }
+        if (!await verifyPassword(password, storedHash)) return err('Mot de passe incorrect.', 401);
         const token = await signJWT(
           { sub: 'admin', exp: Math.floor(Date.now() / 1000) + 86400 * 30 }, // 30 jours
           env.JWT_SECRET
@@ -187,10 +235,7 @@ export default {
       try {
         const { password } = await request.json();
         if (!password) return err('Mot de passe requis.');
-        const hash = await sha256(password);
-        // Mettre à jour la variable secrète n'est pas possible à runtime —
-        // on stocke le hash dans un KV ou on le met dans menu.json (chiffré côté worker)
-        // Solution : on écrit le hash dans menu.json mais UNIQUEMENT lisible par le worker
+        const hash = await pbkdf2Hash(password);
         const gh = await ghGet(env);
         const current = JSON.parse(b64dec(gh.content));
         current.admin_password = hash;
