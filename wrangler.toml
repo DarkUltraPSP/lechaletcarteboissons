@@ -7,3 +7,9 @@ account_id = "a6cbee161140a4d3efee849194d61836"
 REPO = "DarkUltraPSP/lechaletcarteboissons"
 BRANCH = "main"
 FILE = "menu.json"
+
+[[ratelimits]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }

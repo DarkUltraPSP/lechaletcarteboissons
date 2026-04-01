@@ -6,21 +6,32 @@
 //   JWT_SECRET           — chaîne aléatoire pour signer les JWT
 // ═══════════════════════════════════════════════════
 
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+const ALLOWED_ORIGINS = [
+  'https://darkultrapsp.github.io',
+  'http://localhost:8788',
+  'http://localhost:8787',
+];
 
-function json(data, status = 200) {
+function corsHeaders(request) {
+  const origin = request.headers.get('Origin') || '';
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Vary': 'Origin',
+  };
+}
+
+function json(data, status = 200, request) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...CORS, 'Content-Type': 'application/json' },
+    headers: { ...corsHeaders(request), 'Content-Type': 'application/json' },
   });
 }
 
-function err(msg, status = 400) {
-  return json({ error: msg }, status);
+function err(msg, status = 400, request) {
+  return json({ error: msg }, status, request);
 }
 
 // ── JWT minimal (HS256 avec Web Crypto) ──
@@ -169,14 +180,17 @@ export default {
 
     // Preflight CORS
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: CORS });
+      return new Response(null, { status: 204, headers: corsHeaders(request) });
     }
 
     // ── POST /login ──
     if (url.pathname === '/login' && request.method === 'POST') {
+      const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const { success } = await env.RATE_LIMITER.limit({ key: ip });
+      if (!success) return err('Trop de tentatives. Réessaie dans une minute.', 429, request);
       try {
         const { password } = await request.json();
-        if (!password) return err('Mot de passe requis.');
+        if (!password) return err('Mot de passe requis.', 400, request);
         // menu.json:admin_password (posé par /change-password) est prioritaire sur env
         let storedHash = env.ADMIN_PASSWORD_HASH;
         try {
@@ -184,20 +198,20 @@ export default {
           const data = JSON.parse(b64dec(gh.content));
           if (data.admin_password) storedHash = data.admin_password;
         } catch { /* env reste le fallback */ }
-        if (!await verifyPassword(password, storedHash)) return err('Mot de passe incorrect.', 401);
+        if (!await verifyPassword(password, storedHash)) return err('Mot de passe incorrect.', 401, request);
         const token = await signJWT(
           { sub: 'admin', exp: Math.floor(Date.now() / 1000) + 86400 * 30 }, // 30 jours
           env.JWT_SECRET
         );
-        return json({ token });
-      } catch (e) { return err(e.message, 500); }
+        return json({ token }, 200, request);
+      } catch (e) { return err(e.message, 500, request); }
     }
 
     // ── GET /verify ── (protégé — vérifie le JWT)
     if (url.pathname === '/verify' && request.method === 'GET') {
       const payload = await requireAuth(request, env);
-      if (!payload) return err('Non autorisé.', 401);
-      return json({ ok: true });
+      if (!payload) return err('Non autorisé.', 401, request);
+      return json({ ok: true }, 200, request);
     }
 
     // ── GET /menu ── (public — pour index.html)
@@ -207,14 +221,14 @@ export default {
         const data = JSON.parse(b64dec(gh.content));
         // On retire le mot de passe avant de renvoyer
         delete data.admin_password;
-        return json({ data, sha: gh.sha });
-      } catch (e) { return err(e.message, 500); }
+        return json({ data, sha: gh.sha }, 200, request);
+      } catch (e) { return err(e.message, 500, request); }
     }
 
     // ── PUT /menu ── (protégé)
     if (url.pathname === '/menu' && request.method === 'PUT') {
       const payload = await requireAuth(request, env);
-      if (!payload) return err('Non autorisé.', 401);
+      if (!payload) return err('Non autorisé.', 401, request);
       try {
         const { data, sha, message } = await request.json();
         // Récupérer le vrai menu.json pour conserver le hash du mdp
@@ -224,27 +238,27 @@ export default {
         data.admin_password = current.admin_password;
         const content = b64enc(JSON.stringify(data, null, 2));
         const result = await ghPut(env, content, sha || gh.sha, message || 'Mise à jour carte');
-        return json({ sha: result.content.sha });
-      } catch (e) { return err(e.message, 500); }
+        return json({ sha: result.content.sha }, 200, request);
+      } catch (e) { return err(e.message, 500, request); }
     }
 
     // ── POST /change-password ── (protégé)
     if (url.pathname === '/change-password' && request.method === 'POST') {
       const payload = await requireAuth(request, env);
-      if (!payload) return err('Non autorisé.', 401);
+      if (!payload) return err('Non autorisé.', 401, request);
       try {
         const { password } = await request.json();
-        if (!password) return err('Mot de passe requis.');
+        if (!password) return err('Mot de passe requis.', 400, request);
         const hash = await pbkdf2Hash(password);
         const gh = await ghGet(env);
         const current = JSON.parse(b64dec(gh.content));
         current.admin_password = hash;
         const content = b64enc(JSON.stringify(current, null, 2));
         await ghPut(env, content, gh.sha, 'Mot de passe admin modifié');
-        return json({ ok: true });
-      } catch (e) { return err(e.message, 500); }
+        return json({ ok: true }, 200, request);
+      } catch (e) { return err(e.message, 500, request); }
     }
 
-    return err('Route introuvable.', 404);
+    return err('Route introuvable.', 404, request);
   },
 };

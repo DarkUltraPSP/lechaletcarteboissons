@@ -355,6 +355,8 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
 // ══ CONFIG ══
 const WORKER = 'https://chalet-bar-api.lechaletbar.workers.dev';
 
+function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
+
 let D = null, SHA = null, JWT = null;
 let HISTORY = JSON.parse(localStorage.getItem('chalet_history3') || '[]');
 let currentCatId = null;
@@ -509,7 +511,7 @@ function makeBtn(label, cls, onClick) {
 }
 function makeCard2(title, extraHead = '') {
   const c = document.createElement('div'); c.className = 'card';
-  c.innerHTML = `<div class="card-head"><span class="card-title">${title}</span>${extraHead ? `<div>${extraHead}</div>` : ''}</div>`;
+  c.innerHTML = `<div class="card-head"><span class="card-title">${esc(title)}</span>${extraHead ? `<div>${extraHead}</div>` : ''}</div>`;
   const b = document.createElement('div'); b.className = 'card-body'; c.appendChild(b);
   return { card: c, body: b };
 }
@@ -601,7 +603,7 @@ function renderDashboard() {
   `;
   document.getElementById('history').innerHTML = HISTORY.length === 0
     ? '<span style="color:#bbb">Aucune sauvegarde encore.</span>'
-    : HISTORY.map(x => `<div style="padding:5px 0;border-bottom:1px solid #f8f8f8;display:flex;gap:10px"><span style="color:#bbb;font-size:12px;min-width:55px">${x.time}</span><span>${x.label}</span></div>`).join('');
+    : HISTORY.map(x => `<div style="padding:5px 0;border-bottom:1px solid #f8f8f8;display:flex;gap:10px"><span style="color:#bbb;font-size:12px;min-width:55px">${esc(x.time)}</span><span>${esc(x.label)}</span></div>`).join('');
 }
 
 // ══ NAV CATS ══
@@ -609,7 +611,7 @@ function renderNavCats() {
   const el = document.getElementById('nav-cats'); el.innerHTML = '';
   (D.categories || []).forEach(cat => {
     const d = document.createElement('div'); d.className = 'nav-item'; d.dataset.cat = cat.id;
-    d.innerHTML = `<span class="nav-dot"></span>${cat.label}`; d.onclick = () => pgCat(cat.id);
+    d.innerHTML = `<span class="nav-dot"></span>${esc(cat.label)}`; d.onclick = () => pgCat(cat.id);
     el.appendChild(d);
   });
 }
@@ -770,7 +772,7 @@ function buildAddSimple(target, refresh) {
 }
 
 function buildDoubleCard(cat) {
-  const { card, body } = makeCard2(cat.label, `<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:78px;text-align:center">${cat.col1 || 'Prix 1'}</span><span style="min-width:78px;text-align:center">${cat.col2 || 'Prix 2'}</span></div>`);
+  const { card, body } = makeCard2(cat.label, `<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:78px;text-align:center">${esc(cat.col1 || 'Prix 1')}</span><span style="min-width:78px;text-align:center">${esc(cat.col2 || 'Prix 2')}</span></div>`);
   (cat.items || []).forEach(item => {
     // Double prix : statique + input pour chaque colonne
     const p1s = document.createElement('div'); p1s.style.cssText='font-size:13px;font-weight:500;text-align:center;min-width:78px'; p1s.textContent=item.price1!=null?parseFloat(item.price1).toFixed(2).replace('.',',')+' €':'—';

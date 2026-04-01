@@ -59,19 +59,20 @@ body{background:var(--dark);color:var(--cream);font-family:'EB Garamond',serif;m
 </div>
 <script>
 const RAW='https://raw.githubusercontent.com/DarkUltraPSP/lechaletcarteboissons/main/menu.json';
+function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
 function fmt(p, display){
   if(display==='ardoise') return '<span class="ardoise">ardoise</span>';
   if(display==='none') return '';
   if(p===null||p===undefined) return '<span class="ardoise">ardoise</span>';
   return parseFloat(p).toFixed(2).replace('.',',')+'\u00a0€';
 }
-function sec(label){ return `<div class="sec"><div class="sec-line"></div><span class="sec-title">${label}</span></div>`; }
+function sec(label){ return `<div class="sec"><div class="sec-line"></div><span class="sec-title">${esc(label)}</span></div>`; }
 function hr(){ return '<div class="hr"></div>'; }
-function itemSimple(i){ return `<div class="item"><div class="item-name">${i.name}${i.desc?`<div class="item-desc">${i.desc}</div>`:''}</div><div class="price">${fmt(i.price,i.price_display)}</div></div>`; }
+function itemSimple(i){ return `<div class="item"><div class="item-name">${esc(i.name)}${i.desc?`<div class="item-desc">${esc(i.desc)}</div>`:''}</div><div class="price">${fmt(i.price,i.price_display)}</div></div>`; }
 function itemDouble(i,cat){
   const p1=i.price1!==null&&i.price1!==undefined?fmt(i.price1):'<span class="ardoise">ardoise</span>';
   const p2=i.price2!==null&&i.price2!==undefined?fmt(i.price2):'';
-  return `<div class="item"><div class="item-name">${i.name}${i.desc?`<div class="item-desc">${i.desc}</div>`:''}</div><div class="prices2"><span>${p1}</span><span>${p2}</span></div></div>`;
+  return `<div class="item"><div class="item-name">${esc(i.name)}${i.desc?`<div class="item-desc">${esc(i.desc)}</div>`:''}</div><div class="prices2"><span>${p1}</span><span>${p2}</span></div></div>`;
 }
 function renderCat(cat){
   if(!cat.active) return '';
@@ -79,18 +80,18 @@ function renderCat(cat){
   if(cat.type==='simple'){
     if(cat.subsections){
       cat.subsections.forEach(sub=>{
-        h+=`<div class="sub-label">${sub.label}</div>`;
+        h+=`<div class="sub-label">${esc(sub.label)}</div>`;
         sub.items.filter(i=>i.active).forEach(i=>{h+=itemSimple(i);});
       });
     } else {
       (cat.items||[]).filter(i=>i.active).forEach(i=>{h+=itemSimple(i);});
     }
   } else if(cat.type==='double_prix'){
-    h+=`<div class="col-header"><span>${cat.col1||''}</span><span>${cat.col2||''}</span></div>`;
+    h+=`<div class="col-header"><span>${esc(cat.col1||'')}</span><span>${esc(cat.col2||'')}</span></div>`;
     (cat.items||[]).filter(i=>i.active).forEach(i=>{h+=itemDouble(i,cat);});
   } else if(cat.type==='formule'){
     (cat.items||[]).filter(i=>i.active).forEach(i=>{
-      h+=`<div class="formule"><div><div class="formule-name">${i.name}</div>${i.desc?`<div class="formule-detail">${i.desc}</div>`:''}</div><div class="formule-price">${fmt(i.price,i.price_display)}</div></div>`;
+      h+=`<div class="formule"><div><div class="formule-name">${esc(i.name)}</div>${i.desc?`<div class="formule-detail">${esc(i.desc)}</div>`:''}</div><div class="formule-price">${fmt(i.price,i.price_display)}</div></div>`;
     });
   }
   return h;
