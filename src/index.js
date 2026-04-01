@@ -16,6 +16,7 @@ const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
 };
 
 function validateMenuData(data) {
@@ -55,7 +56,7 @@ function validateMenuData(data) {
 
 function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '';
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : '';
   return {
     'Access-Control-Allow-Origin': allowed,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
@@ -251,7 +252,7 @@ export default {
           status: 200,
           headers: { ...corsHeaders(request), 'Content-Type': 'application/json', 'Set-Cookie': cookieHeader },
         });
-      } catch (e) { return err(e.message, 500, request); }
+      } catch (e) { return err('Erreur serveur.', 500, request); }
     }
 
     // ── GET /verify ── (protégé — vérifie le JWT)
@@ -269,11 +270,14 @@ export default {
         // On retire le mot de passe avant de renvoyer
         delete data.admin_password;
         return json({ data, sha: gh.sha }, 200, request);
-      } catch (e) { return err(e.message, 500, request); }
+      } catch (e) { return err('Erreur serveur.', 500, request); }
     }
 
     // ── PUT /menu ── (protégé)
     if (url.pathname === '/menu' && request.method === 'PUT') {
+      const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const { success } = await env.RATE_LIMITER.limit({ key: ip });
+      if (!success) return err('Trop de tentatives. Réessaie dans une minute.', 429, request);
       const payload = await requireAuth(request, env);
       if (!payload) return err('Non autorisé.', 401, request);
       try {
@@ -288,24 +292,30 @@ export default {
         const content = b64enc(JSON.stringify(data, null, 2));
         const result = await ghPut(env, content, sha || gh.sha, message || 'Mise à jour carte');
         return json({ sha: result.content.sha }, 200, request);
-      } catch (e) { return err(e.message, 500, request); }
+      } catch (e) { return err('Erreur serveur.', 500, request); }
     }
 
     // ── POST /change-password ── (protégé)
     if (url.pathname === '/change-password' && request.method === 'POST') {
+      const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const { success } = await env.RATE_LIMITER.limit({ key: ip });
+      if (!success) return err('Trop de tentatives. Réessaie dans une minute.', 429, request);
       const payload = await requireAuth(request, env);
       if (!payload) return err('Non autorisé.', 401, request);
       try {
-        const { password } = await request.json();
-        if (!password) return err('Mot de passe requis.', 400, request);
-        const hash = await pbkdf2Hash(password);
+        const { password, oldPassword } = await request.json();
+        if (!password || !oldPassword) return err('Mot de passe requis.', 400, request);
+        let storedHash = env.ADMIN_PASSWORD_HASH;
         const gh = await ghGet(env);
         const current = JSON.parse(b64dec(gh.content));
+        if (current.admin_password) storedHash = current.admin_password;
+        if (!await verifyPassword(oldPassword, storedHash)) return err('Ancien mot de passe incorrect.', 401, request);
+        const hash = await pbkdf2Hash(password);
         current.admin_password = hash;
         const content = b64enc(JSON.stringify(current, null, 2));
         await ghPut(env, content, gh.sha, 'Mot de passe admin modifié');
         return json({ ok: true }, 200, request);
-      } catch (e) { return err(e.message, 500, request); }
+      } catch (e) { return err('Erreur serveur.', 500, request); }
     }
 
     // ── POST /logout ──

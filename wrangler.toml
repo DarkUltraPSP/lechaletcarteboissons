@@ -1,7 +1,6 @@
 name = "chalet-bar-api"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
-# account_id est défini via CLOUDFLARE_ACCOUNT_ID (variable d'environnement ou wrangler.toml.local)
 
 [vars]
 REPO = "DarkUltraPSP/lechaletcarteboissons"

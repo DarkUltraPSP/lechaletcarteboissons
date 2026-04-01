@@ -327,8 +327,9 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
     <div class="pg-head"><div><div class="pg-title">Paramètres</div></div></div>
     <div class="settings-card">
       <div class="settings-title">Mot de passe admin</div>
-      <div class="field"><label>Nouveau mot de passe</label>
+      <div class="field"><label>Modifier le mot de passe</label>
         <div class="field-row">
+          <input type="password" id="old-pwd" placeholder="Ancien mot de passe">
           <input type="password" id="new-pwd" placeholder="Nouveau mot de passe">
           <input type="password" id="new-pwd2" placeholder="Confirmer">
           <button class="btn-save-setting" onclick="changePwd()">Modifier</button>
@@ -360,7 +361,7 @@ const WORKER = 'https://chalet-bar-api.lechaletbar.workers.dev';
 function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
 
 let D = null, SHA = null;
-let HISTORY = JSON.parse(localStorage.getItem('chalet_history3') || '[]');
+let HISTORY = JSON.parse(sessionStorage.getItem('chalet_history3') || '[]');
 let currentCatId = null;
 
 // ══ API calls ══
@@ -436,7 +437,7 @@ async function saveNow(label) {
     const ts = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     HISTORY.unshift({ time: ts, label: label || 'Sauvegarde' });
     if (HISTORY.length > 8) HISTORY.pop();
-    localStorage.setItem('chalet_history3', JSON.stringify(HISTORY));
+    sessionStorage.setItem('chalet_history3', JSON.stringify(HISTORY));
     showSaveBar('ok'); renderDashboard();
   } catch (e) { showSaveBar('error', e.message); }
 }
@@ -820,12 +821,15 @@ function buildFormuleCard(cat) {
 
 // ══ SETTINGS ══
 async function changePwd() {
+  const old = document.getElementById('old-pwd').value;
   const p1 = document.getElementById('new-pwd').value;
   const p2 = document.getElementById('new-pwd2').value;
-  if (!p1) { alert('Mot de passe vide.'); return; }
+  if (!old) { alert('Ancien mot de passe requis.'); return; }
+  if (!p1) { alert('Nouveau mot de passe vide.'); return; }
   if (p1 !== p2) { alert('Les mots de passe ne correspondent pas.'); return; }
   try {
-    await api('/change-password', 'POST', { password: p1 });
+    await api('/change-password', 'POST', { password: p1, oldPassword: old });
+    document.getElementById('old-pwd').value = '';
     document.getElementById('new-pwd').value = '';
     document.getElementById('new-pwd2').value = '';
     alert('Mot de passe modifié !');

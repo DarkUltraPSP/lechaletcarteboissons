@@ -270,6 +270,8 @@ body{
 <script>
 const RAW = 'https://raw.githubusercontent.com/DarkUltraPSP/lechaletcarteboissons/main/menu.json';
 
+function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
+
 function fmt(p, display){
   if(display==='ardoise') return '<span class="p-ardoise">ardoise</span>';
   if(display==='none') return '';
@@ -278,13 +280,13 @@ function fmt(p, display){
 }
 
 function sec(label){
-  return `<div class="p-sec"><div class="p-sec-line"></div><span class="p-sec-title">${label}</span></div>`;
+  return `<div class="p-sec"><div class="p-sec-line"></div><span class="p-sec-title">${esc(label)}</span></div>`;
 }
 function hr(){ return '<div class="p-hr"></div>'; }
 
 function itemSimple(i){
   return `<div class="p-item">
-    <div class="p-item-name">${i.name}${i.desc?`<div class="p-item-desc">${i.desc}</div>`:''}</div>
+    <div class="p-item-name">${esc(i.name)}${i.desc?`<div class="p-item-desc">${esc(i.desc)}</div>`:''}</div>
     <div class="p-price">${fmt(i.price,i.price_display)}</div>
   </div>`;
 }
@@ -293,7 +295,7 @@ function itemDouble(i, cat){
   const p1 = i.price1!=null ? fmt(i.price1) : '<span class="p-ardoise">ardoise</span>';
   const p2 = i.price2!=null ? fmt(i.price2) : '';
   return `<div class="p-item">
-    <div class="p-item-name">${i.name}</div>
+    <div class="p-item-name">${esc(i.name)}</div>
     <div class="p-prices2"><span>${p1}</span><span>${p2}</span></div>
   </div>`;
 }
@@ -303,19 +305,19 @@ function renderCatContent(cat){
   if(cat.type==='simple'){
     if(cat.subsections){
       cat.subsections.forEach(sub=>{
-        h += `<div class="p-sub-label">${sub.label}</div>`;
+        h += `<div class="p-sub-label">${esc(sub.label)}</div>`;
         sub.items.filter(i=>i.active).forEach(i=>{ h += itemSimple(i); });
       });
     } else {
       (cat.items||[]).filter(i=>i.active).forEach(i=>{ h += itemSimple(i); });
     }
   } else if(cat.type==='double_prix'){
-    h += `<div class="p-col-header"><span>${cat.col1||''}</span><span>${cat.col2||''}</span></div>`;
+    h += `<div class="p-col-header"><span>${esc(cat.col1||'')}</span><span>${esc(cat.col2||'')}</span></div>`;
     (cat.items||[]).filter(i=>i.active).forEach(i=>{ h += itemDouble(i,cat); });
   } else if(cat.type==='formule'){
     (cat.items||[]).filter(i=>i.active).forEach(i=>{
       h += `<div class="p-formule">
-        <div><div class="p-formule-name">${i.name}</div>${i.desc?`<div class="p-formule-detail">${i.desc}</div>`:''}</div>
+        <div><div class="p-formule-name">${esc(i.name)}</div>${i.desc?`<div class="p-formule-detail">${esc(i.desc)}</div>`:''}</div>
         <div class="p-formule-price">${fmt(i.price,i.price_display)}</div>
       </div>`;
     });
