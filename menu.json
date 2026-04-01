@@ -408,28 +408,6 @@
           "desc": "Servie avec croutons"
         }
       ]
-    },
-    {
-      "id": "formules",
-      "label": "Nos Formules",
-      "type": "formule",
-      "active": true,
-      "items": [
-        {
-          "id": "fo1",
-          "name": "Formule Apero Chalet",
-          "active": true,
-          "price": 18,
-          "desc": "Planche Tapenade + 1 Cocktail"
-        },
-        {
-          "id": "fo2",
-          "name": "Formule Montagne",
-          "active": true,
-          "price": 30,
-          "desc": "Planche Tapenade + 2 Cocktails"
-        }
-      ]
     }
   ]
 }
