@@ -505,9 +505,13 @@ function makeInp(placeholder, cls = 'inp inp-wide') {
 function makeBtn(label, cls, onClick) {
   const b = document.createElement('button'); b.className = cls; b.textContent = label; b.onclick = onClick; return b;
 }
-function makeCard2(title, extraHead = '') {
+function makeCard2(title, extraHeadEl = null) {
   const c = document.createElement('div'); c.className = 'card';
-  c.innerHTML = `<div class="card-head"><span class="card-title">${esc(title)}</span>${extraHead ? `<div>${extraHead}</div>` : ''}</div>`;
+  const head = document.createElement('div'); head.className = 'card-head';
+  const titleSpan = document.createElement('span'); titleSpan.className = 'card-title'; titleSpan.textContent = title;
+  head.appendChild(titleSpan);
+  if (extraHeadEl) { const wrap = document.createElement('div'); wrap.appendChild(extraHeadEl); head.appendChild(wrap); }
+  c.appendChild(head);
   const b = document.createElement('div'); b.className = 'card-body'; c.appendChild(b);
   return { card: c, body: b };
 }
@@ -732,7 +736,9 @@ function buildSimpleCard(cat) {
 }
 
 function buildSubsectionCard(cat, sub, si) {
-  const { card, body } = makeCard2(sub.label, `<button class="btn-secondary" style="font-size:11px" onclick="deleteSubsection('${cat.id}',${si})">Supprimer</button>`);
+  const delBtn = document.createElement('button'); delBtn.className = 'btn-secondary'; delBtn.style.fontSize = '11px'; delBtn.textContent = 'Supprimer';
+  delBtn.addEventListener('click', () => deleteSubsection(cat.id, si));
+  const { card, body } = makeCard2(sub.label, delBtn);
   sub.items.forEach(item => {
     const { wrap: priceWrap, static: priceStatic, input: priceEditCont } = makePriceCtrl(item);
 
@@ -768,7 +774,11 @@ function buildAddSimple(target, refresh) {
 }
 
 function buildDoubleCard(cat) {
-  const { card, body } = makeCard2(cat.label, `<div style="display:flex;gap:8px;font-size:11px;color:#aaa"><span style="min-width:78px;text-align:center">${esc(cat.col1 || 'Prix 1')}</span><span style="min-width:78px;text-align:center">${esc(cat.col2 || 'Prix 2')}</span></div>`);
+  const colHead = document.createElement('div'); colHead.style.cssText = 'display:flex;gap:8px;font-size:11px;color:#aaa';
+  const s1 = document.createElement('span'); s1.style.cssText = 'min-width:78px;text-align:center'; s1.textContent = cat.col1 || 'Prix 1';
+  const s2 = document.createElement('span'); s2.style.cssText = 'min-width:78px;text-align:center'; s2.textContent = cat.col2 || 'Prix 2';
+  colHead.appendChild(s1); colHead.appendChild(s2);
+  const { card, body } = makeCard2(cat.label, colHead);
   (cat.items || []).forEach(item => {
     // Double prix : statique + input pour chaque colonne
     const p1s = document.createElement('div'); p1s.style.cssText='font-size:13px;font-weight:500;text-align:center;min-width:78px'; p1s.textContent=item.price1!=null?parseFloat(item.price1).toFixed(2).replace('.',',')+' €':'—';
