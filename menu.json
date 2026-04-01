@@ -184,8 +184,7 @@
           "id": "b2",
           "name": "IPA Mont Blanc 33cl",
           "active": true,
-          "price": 0,
-          "desc": ""
+          "price": null
         },
         {
           "id": "b3",

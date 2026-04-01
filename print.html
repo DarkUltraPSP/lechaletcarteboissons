@@ -268,7 +268,9 @@ body{
 <script>
 const RAW = 'https://raw.githubusercontent.com/DarkUltraPSP/lechaletcarteboissons/main/menu.json';
 
-function fmt(p){
+function fmt(p, display){
+  if(display==='ardoise') return '<span class="p-ardoise">ardoise</span>';
+  if(display==='none') return '';
   if(p===null||p===undefined) return '<span class="p-ardoise">ardoise</span>';
   return parseFloat(p).toFixed(2).replace('.',',')+'\u00a0€';
 }
@@ -281,7 +283,7 @@ function hr(){ return '<div class="p-hr"></div>'; }
 function itemSimple(i){
   return `<div class="p-item">
     <div class="p-item-name">${i.name}${i.desc?`<div class="p-item-desc">${i.desc}</div>`:''}</div>
-    <div class="p-price">${fmt(i.price)}</div>
+    <div class="p-price">${fmt(i.price,i.price_display)}</div>
   </div>`;
 }
 
@@ -312,7 +314,7 @@ function renderCatContent(cat){
     (cat.items||[]).filter(i=>i.active).forEach(i=>{
       h += `<div class="p-formule">
         <div><div class="p-formule-name">${i.name}</div>${i.desc?`<div class="p-formule-detail">${i.desc}</div>`:''}</div>
-        <div class="p-formule-price">${fmt(i.price)}</div>
+        <div class="p-formule-price">${fmt(i.price,i.price_display)}</div>
       </div>`;
     });
   }

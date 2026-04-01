@@ -680,21 +680,52 @@ function renderCatPage(cat) {
   }
 }
 
+function makePriceCtrl(item) {
+  function staticText() {
+    const d = item.price_display || 'price';
+    if(d === 'ardoise') return 'ardoise';
+    if(d === 'none') return '—';
+    return item.price != null ? parseFloat(item.price).toFixed(2).replace('.',',') + ' €' : '—';
+  }
+  const priceStatic = document.createElement('div');
+  priceStatic.style.cssText = 'font-size:13px;font-weight:500;color:var(--text);text-align:right;min-width:78px';
+  priceStatic.textContent = staticText();
+
+  const sel = document.createElement('select'); sel.className = 'inp'; sel.style.width = '78px';
+  [['price','Prix'],['ardoise','Ardoise'],['none','Masqué']].forEach(([v,l]) => {
+    const o = document.createElement('option'); o.value = v; o.textContent = l;
+    if((item.price_display || 'price') === v) o.selected = true;
+    sel.appendChild(o);
+  });
+
+  const priceInp = document.createElement('input'); priceInp.className = 'inp inp-price'; priceInp.type = 'number'; priceInp.step = '0.5';
+  priceInp.value = item.price != null ? item.price : '';
+  priceInp.style.display = (item.price_display || 'price') === 'price' ? '' : 'none';
+  priceInp.style.marginTop = '4px';
+
+  priceInp.onchange = () => { item.price = priceInp.value !== '' ? parseFloat(priceInp.value) : null; priceStatic.textContent = staticText(); scheduleSave('Prix modifié'); };
+  sel.onchange = () => {
+    if(sel.value === 'price') delete item.price_display; else item.price_display = sel.value;
+    priceInp.style.display = sel.value === 'price' ? '' : 'none';
+    priceStatic.textContent = staticText(); scheduleSave('Affichage prix modifié');
+  };
+
+  const editCont = document.createElement('div'); editCont.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end;min-width:78px';
+  editCont.appendChild(sel); editCont.appendChild(priceInp);
+  const wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;align-items:center;justify-content:flex-end;min-width:78px';
+  wrap.appendChild(priceStatic); wrap.appendChild(editCont); editCont.style.display = 'none';
+  return { wrap, static: priceStatic, input: editCont };
+}
+
 function buildSimpleCard(cat) {
   const { card, body } = makeCard2(cat.label);
   (cat.items || []).forEach(item => {
-    // Prix : static + input
-    const priceStatic = document.createElement('div'); priceStatic.style.cssText = 'font-size:13px;font-weight:500;color:var(--text);text-align:right;min-width:78px';
-    priceStatic.textContent = item.price ? parseFloat(item.price).toFixed(2).replace('.',',')+' €' : '—';
-    const priceInp = document.createElement('input'); priceInp.className = 'inp inp-price'; priceInp.type='number'; priceInp.step='0.5'; priceInp.value=item.price||''; priceInp.style.display='none';
-    priceInp.onchange = () => { item.price = parseFloat(priceInp.value)||0; priceStatic.textContent = parseFloat(item.price).toFixed(2).replace('.',',')+' €'; scheduleSave('Prix modifié'); };
-    const priceWrap = document.createElement('div'); priceWrap.style.cssText='display:flex;align-items:center;justify-content:flex-end;min-width:78px';
-    priceWrap.appendChild(priceStatic); priceWrap.appendChild(priceInp);
+    const { wrap: priceWrap, static: priceStatic, input: priceEditCont } = makePriceCtrl(item);
 
     const row = makeEditableRow(item, '1fr 78px 26px 34px 26px',
       () => { if(!confirm('Supprimer cet article ?')) return; cat.items=cat.items.filter(i=>i!==item); renderCatPage(cat); scheduleSave('Article supprimé'); },
       v => { item.active=v; renderCatPage(cat); scheduleSave(`Article ${v?'activé':'masqué'}`); },
-      [{ wrap: priceWrap, static: priceStatic, input: priceInp }]
+      [{ wrap: priceWrap, static: priceStatic, input: priceEditCont }]
     );
     body.appendChild(row);
   });
@@ -704,17 +735,12 @@ function buildSimpleCard(cat) {
 function buildSubsectionCard(cat, sub, si) {
   const { card, body } = makeCard2(sub.label, `<button class="btn-secondary" style="font-size:11px" onclick="deleteSubsection('${cat.id}',${si})">Supprimer</button>`);
   sub.items.forEach(item => {
-    const priceStatic = document.createElement('div'); priceStatic.style.cssText = 'font-size:13px;font-weight:500;color:var(--text);text-align:right;min-width:78px';
-    priceStatic.textContent = item.price ? parseFloat(item.price).toFixed(2).replace('.',',')+' €' : '—';
-    const priceInp = document.createElement('input'); priceInp.className = 'inp inp-price'; priceInp.type='number'; priceInp.step='0.5'; priceInp.value=item.price||''; priceInp.style.display='none';
-    priceInp.onchange = () => { item.price = parseFloat(priceInp.value)||0; priceStatic.textContent = parseFloat(item.price).toFixed(2).replace('.',',')+' €'; scheduleSave('Prix modifié'); };
-    const priceWrap = document.createElement('div'); priceWrap.style.cssText='display:flex;align-items:center;justify-content:flex-end;min-width:78px';
-    priceWrap.appendChild(priceStatic); priceWrap.appendChild(priceInp);
+    const { wrap: priceWrap, static: priceStatic, input: priceEditCont } = makePriceCtrl(item);
 
     const row = makeEditableRow(item, '1fr 78px 26px 34px 26px',
       () => { if(!confirm('Supprimer cet article ?')) return; sub.items=sub.items.filter(i=>i!==item); renderCatPage(cat); scheduleSave('Article supprimé'); },
       v => { item.active=v; renderCatPage(cat); scheduleSave(`Article ${v?'activé':'masqué'}`); },
-      [{ wrap: priceWrap, static: priceStatic, input: priceInp }]
+      [{ wrap: priceWrap, static: priceStatic, input: priceEditCont }]
     );
     body.appendChild(row);
   });
