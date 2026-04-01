@@ -145,6 +145,13 @@ export default {
       } catch (e) { return err(e.message, 500); }
     }
 
+    // ── GET /verify ── (protégé — vérifie le JWT)
+    if (url.pathname === '/verify' && request.method === 'GET') {
+      const payload = await requireAuth(request, env);
+      if (!payload) return err('Non autorisé.', 401);
+      return json({ ok: true });
+    }
+
     // ── GET /menu ── (public — pour index.html)
     if (url.pathname === '/menu' && request.method === 'GET') {
       try {

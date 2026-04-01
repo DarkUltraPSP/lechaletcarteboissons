@@ -414,6 +414,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (saved) {
     JWT = saved;
     try {
+      await api('/verify');
       const { data, sha } = await api('/menu');
       D = data; SHA = sha;
       document.getElementById('login-screen').style.display = 'none';
