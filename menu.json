@@ -255,13 +255,6 @@
       "active": true,
       "items": [
         {
-          "id": "a1",
-          "name": "Ricard",
-          "active": true,
-          "price": 2.5,
-          "desc": "2 cl - 5,00 euro pour 4 cl"
-        },
-        {
           "id": "a2",
           "name": "Kir",
           "active": true,
