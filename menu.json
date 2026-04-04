@@ -278,6 +278,12 @@
           "name": "Martini Blanc",
           "active": true,
           "price": 3.5
+        },
+        {
+          "id": "i_4o2z0",
+          "name": "Ricard (2cl)",
+          "active": true,
+          "price": 2.5
         }
       ]
     },
