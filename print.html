@@ -361,32 +361,34 @@ function makePage(content){
 // Chaque page fait ~170mm de contenu utile (210 - marges - bordures - footer)
 // On estime la hauteur de chaque bloc et on coupe si ça dépasse
 const CAT_HEIGHTS = {
-  sec: 9,       // titre de section (mm)
-  sub_label: 5, // sous-titre
-  item: 5,      // ligne article
-  formule: 12,  // encart formule
-  hr: 6,        // séparateur
-  col_header: 5,
+  sec: 10,      // titre de section (mm)
+  sub_label: 7, // sous-titre
+  item: 7,      // ligne article
+  item_desc: 3, // bonus si l'article a une description
+  formule: 13,  // encart formule
+  hr: 7,        // séparateur
+  col_header: 6,
 };
 const PAGE_HEIGHT = 160; // mm disponibles par page (hors couverture et footer)
 const FOOTER_H = 14;
 
 function estimateHeight(cat){
   let h = CAT_HEIGHTS.sec;
+  const itemH = i => CAT_HEIGHTS.item + (i.desc ? CAT_HEIGHTS.item_desc : 0);
   if(cat.type==='simple'){
     if(cat.subsections){
       cat.subsections.forEach(sub=>{
         h += CAT_HEIGHTS.sub_label;
-        h += sub.items.filter(i=>i.active).length * CAT_HEIGHTS.item;
+        sub.items.filter(i=>i.active).forEach(i=>{ h += itemH(i); });
       });
     } else {
-      h += (cat.items||[]).filter(i=>i.active).length * CAT_HEIGHTS.item;
+      (cat.items||[]).filter(i=>i.active).forEach(i=>{ h += itemH(i); });
     }
   } else if(cat.type==='double_prix'){
     h += CAT_HEIGHTS.col_header;
-    h += (cat.items||[]).filter(i=>i.active).length * CAT_HEIGHTS.item;
+    (cat.items||[]).filter(i=>i.active).forEach(i=>{ h += itemH(i); });
   } else if(cat.type==='formule'){
-    h += (cat.items||[]).filter(i=>i.active).length * CAT_HEIGHTS.formule;
+    (cat.items||[]).filter(i=>i.active).forEach(i=>{ h += CAT_HEIGHTS.formule + (i.desc ? CAT_HEIGHTS.item_desc : 0); });
   }
   return h;
 }
