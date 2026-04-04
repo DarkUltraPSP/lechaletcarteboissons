@@ -410,10 +410,10 @@
         },
         {
           "id": "fm3",
-          "name": "Planche Tapenades",
+          "name": "Planche Tapenades et Tartinables (Servie avec croutons)",
           "active": true,
           "price": 10,
-          "desc": "Servie avec croutons"
+          "desc": "Selon arrivage"
         }
       ]
     }
