@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +15,12 @@
   --gold:#B8922A;--gold-l:#D4AC50;--gold-d:#8A6B1F;
   --dark:#1C130A;--dark2:#241A0C;--dark3:#2F2010;
   --cream:#F4ECD8;--cream2:#E8D9BB;--muted:#8A7355;
+  --body-bg:#2a2a2a;
+}
+[data-theme="light"]{
+  --dark:#EDE3CC;--dark2:#FDF6E8;--dark3:#F5EDD8;
+  --cream:#2C1A08;--cream2:#3D2810;--muted:#7A5230;
+  --body-bg:#d8cdb8;
 }
 
 /* ═══════════════════════════════
@@ -23,8 +29,9 @@
 *{margin:0;padding:0;box-sizing:border-box}
 
 body{
-  background:#2a2a2a;
+  background:var(--body-bg);
   font-family:'EB Garamond',serif;
+  transition:background 0.3s;
 }
 
 /* Barre du haut — masquée à l'impression */
@@ -78,6 +85,8 @@ body{
   transition:all 0.15s;
 }
 .btn-close:hover{background:#252525;color:#aaa}
+.btn-theme{padding:9px 14px;background:rgba(184,146,42,0.12);color:var(--gold);border:1px solid rgba(184,146,42,0.35);border-radius:6px;font-size:15px;cursor:pointer;transition:background 0.15s}
+.btn-theme:hover{background:rgba(184,146,42,0.25)}
 
 /* Loading */
 #loading{
@@ -134,6 +143,13 @@ body{
     radial-gradient(ellipse at 20% 0%,rgba(90,55,15,0.2) 0%,transparent 60%),
     radial-gradient(ellipse at 80% 100%,rgba(50,30,5,0.25) 0%,transparent 60%);
 }
+[data-theme="light"] .page-inner{
+  background-image:
+    radial-gradient(ellipse at 20% 0%,rgba(184,146,42,0.07) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 100%,rgba(184,146,42,0.05) 0%,transparent 60%);
+}
+[data-theme="light"] .p-sec-title{background:var(--dark2)}
+[data-theme="light"] .cover-ornament{opacity:0.3}
 
 /* ═══════════════════════════════
    COUVERTURE
@@ -256,6 +272,7 @@ body{
 <div id="toolbar">
   <div id="toolbar-title">Le Chalet Bar — Carte à imprimer</div>
   <div id="toolbar-info"></div>
+  <button class="btn-theme" id="theme-toggle" onclick="toggleTheme()" title="Changer de thème">🌙</button>
   <button class="btn-close" onclick="window.close()">✕ Fermer</button>
   <button class="btn-print" onclick="window.print()">🖨 Imprimer</button>
 </div>
@@ -384,27 +401,42 @@ async function load(){
 
     // Page 1 : couverture
     const info = D.info || {};
-    const socialLinks = `
-      <div style="display:flex;flex-direction:column;align-items:center;gap:2.5mm;margin-top:5mm">
-        ${info.phone ? `<a href="tel:${(info.phone||'').replace(/\s/g,'')}" style="display:flex;align-items:center;gap:2mm;text-decoration:none;color:var(--gold);font-family:'EB Garamond',serif;font-size:8pt;letter-spacing:0.05em"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.32 2 2 0 0 1 3.61 1.1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.5 16h1.42z"/></svg>${info.phone}</a>` : ''}
-        ${info.email ? `<a href="mailto:${info.email}" style="display:flex;align-items:center;gap:2mm;text-decoration:none;color:var(--gold);font-family:'EB Garamond',serif;font-size:8pt;letter-spacing:0.05em"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>${info.email}</a>` : ''}
-        <a href="https://www.instagram.com/le_chalet63000/" style="display:flex;align-items:center;gap:2mm;text-decoration:none;color:var(--gold);font-family:'EB Garamond',serif;font-size:8pt;letter-spacing:0.05em"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>@le_chalet63000</a>
-        <a href="https://www.facebook.com/p/Le-Chalet-61576979939921/" style="display:flex;align-items:center;gap:2mm;text-decoration:none;color:var(--gold);font-family:'EB Garamond',serif;font-size:8pt;letter-spacing:0.05em"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>Le Chalet</a>
+    const coverInfo = `
+      <div style="margin-top:6mm;text-align:center;display:flex;flex-direction:column;align-items:center;gap:0">
+
+        ${(info.hours_open || info.hours_close || info.closed_days) ? `
+        <div style="margin-bottom:4mm">
+          <div style="font-family:'Cinzel',serif;font-size:7pt;letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;margin-bottom:1.5mm">Horaires</div>
+          ${(info.hours_open || info.hours_close) ? `<div style="font-family:'EB Garamond',serif;font-size:11pt;color:var(--cream)">${info.hours_open||''}${info.hours_open && info.hours_close ? ' – ' : ''}${info.hours_close||''}</div>` : ''}
+          ${info.closed_days ? `<div style="font-family:'EB Garamond',serif;font-style:italic;font-size:9pt;color:var(--muted);margin-top:1mm">Fermé ${info.closed_days}</div>` : ''}
+        </div>` : ''}
+
+        <div style="width:20mm;height:0.4px;background:linear-gradient(to right,transparent,rgba(184,146,42,0.4),transparent);margin:2mm 0"></div>
+
+        ${info.phone ? `<a href="tel:${(info.phone||'').replace(/\s/g,'')}" style="display:flex;align-items:center;gap:2.5mm;text-decoration:none;color:var(--cream);font-family:'EB Garamond',serif;font-size:11pt;margin:1.5mm 0"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold);flex-shrink:0"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.32 2 2 0 0 1 3.61 1.1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.5 16h1.42z"/></svg>${info.phone}</a>` : ''}
+        ${info.email ? `<a href="mailto:${info.email}" style="display:flex;align-items:center;gap:2.5mm;text-decoration:none;color:var(--muted);font-family:'EB Garamond',serif;font-style:italic;font-size:9pt;margin:1mm 0"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold);flex-shrink:0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>${info.email}</a>` : ''}
+
+        <div style="width:20mm;height:0.4px;background:linear-gradient(to right,transparent,rgba(184,146,42,0.4),transparent);margin:3mm 0"></div>
+
+        <div style="display:flex;gap:8mm;align-items:center;margin-top:1mm">
+          <a href="https://www.instagram.com/le_chalet63000/" style="display:flex;flex-direction:column;align-items:center;gap:1.5mm;text-decoration:none;color:var(--gold)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <span style="font-family:'EB Garamond',serif;font-size:8pt;letter-spacing:0.05em">@le_chalet63000</span>
+          </a>
+          <div style="width:0.4px;height:10mm;background:rgba(184,146,42,0.3)"></div>
+          <a href="https://www.facebook.com/p/Le-Chalet-61576979939921/" style="display:flex;flex-direction:column;align-items:center;gap:1.5mm;text-decoration:none;color:var(--gold)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <span style="font-family:'EB Garamond',serif;font-size:8pt;letter-spacing:0.05em">Le Chalet</span>
+          </a>
+        </div>
+
       </div>
     `;
-    const hoursBlock = (info.hours_open || info.hours_close || info.closed_days) ? `
-      <div style="margin-top:5mm;text-align:center">
-        <div style="font-family:'Cinzel',serif;font-size:6pt;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:2mm">Horaires</div>
-        ${(info.hours_open || info.hours_close) ? `<div style="font-family:'EB Garamond',serif;font-size:8.5pt;color:var(--cream)">${info.hours_open||''}${info.hours_open && info.hours_close ? ' – ' : ''}${info.hours_close||''}</div>` : ''}
-        ${info.closed_days ? `<div style="font-family:'EB Garamond',serif;font-style:italic;font-size:7.5pt;color:var(--muted);margin-top:1mm">Fermé ${info.closed_days}</div>` : ''}
-      </div>
-    ` : '';
     pages.push(makePage(`
       <div class="cover">
         <div class="cover-ornament">${ornement}</div>
         ${logoSVG}
-        ${hoursBlock}
-        ${socialLinks}
+        ${coverInfo}
         <div class="cover-ornament" style="margin-top:5mm">${ornement}</div>
       </div>
     `));
@@ -471,6 +503,18 @@ async function load(){
   }
 }
 
+function toggleTheme(){
+  const html=document.documentElement;
+  const next=html.dataset.theme==='dark'?'light':'dark';
+  html.dataset.theme=next;
+  document.getElementById('theme-toggle').textContent=next==='dark'?'🌙':'☀️';
+  localStorage.setItem('chalet_theme',next);
+}
+(function(){
+  const t=localStorage.getItem('chalet_theme')||'dark';
+  document.documentElement.dataset.theme=t;
+  document.getElementById('theme-toggle').textContent=t==='dark'?'🌙':'☀️';
+})();
 load();
 </script>
 </body>
