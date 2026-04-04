@@ -403,10 +403,10 @@
         },
         {
           "id": "fm2",
-          "name": "Terrines au choix",
+          "name": "Terrines au choix (Servis avec croutons)",
           "active": true,
           "price": 8,
-          "desc": "Servis avec croutons selon arrivage"
+          "desc": "Selon arrivage"
         },
         {
           "id": "fm3",
