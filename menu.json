@@ -269,9 +269,10 @@
         },
         {
           "id": "a4",
-          "name": "Martini Rouge",
+          "name": "Martini Rouge, Blanc",
           "active": true,
-          "price": 3.5
+          "price": 3.5,
+          "desc": ""
         },
         {
           "id": "a5",
