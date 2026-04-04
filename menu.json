@@ -284,6 +284,12 @@
           "name": "Ricard (2cl)",
           "active": true,
           "price": 2.5
+        },
+        {
+          "id": "i_hn21t",
+          "name": "Ricard (4cl)",
+          "active": true,
+          "price": 5
         }
       ]
     },
