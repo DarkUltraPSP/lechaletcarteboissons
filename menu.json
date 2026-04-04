@@ -377,7 +377,7 @@
     },
     {
       "id": "chaud",
-      "label": "Boissons Chaudes",
+      "label": "Boisson Chaude",
       "type": "simple",
       "active": true,
       "items": [
