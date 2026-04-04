@@ -103,14 +103,14 @@
               "name": "Sirop à l'eau",
               "active": true,
               "price": 2.5,
-              "desc": "25 cl — Menthe, Grenadine, Cerise, Fraise, Citron, Violette, Peche"
+              "desc": "25 cl — Menthe, Grenadine, Fraise, Citron, Cerise, Violette, Orgeat, Pêche, Kiwi."
             },
             {
               "id": "f13",
               "name": "Diabolo",
               "active": true,
               "price": 3.5,
-              "desc": "25 cl — Menthe, Grenadine, Fraise, Citron"
+              "desc": "25 cl — Menthe, Grenadine, Fraise, Citron, Cerise, Violette, Orgeat, Pêche, Kiwi"
             }
           ]
         }
