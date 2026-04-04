@@ -240,10 +240,11 @@
         },
         {
           "id": "v4",
-          "name": "Gourmandoise Rose",
+          "name": "Gourmandise Rose",
           "active": true,
           "price1": 4,
-          "price2": 18
+          "price2": 18,
+          "desc": ""
         }
       ]
     },
