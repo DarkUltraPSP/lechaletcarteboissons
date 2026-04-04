@@ -107,6 +107,20 @@ body{
 }
 
 /* ═══════════════════════════════
+   MOBILE
+═══════════════════════════════ */
+@media (max-width:620px){
+  #toolbar{padding:8px 12px;gap:8px;flex-wrap:wrap}
+  #toolbar-title{font-size:11px;width:100%;order:-1}
+  #toolbar-info{display:none}
+  .btn-close{display:none}
+  .btn-print{font-size:12px;padding:7px 12px}
+  .btn-theme{padding:7px 10px;font-size:14px}
+  #pages{padding:8px;gap:8px;align-items:flex-start;overflow-x:hidden}
+  .page{transform-origin:top left}
+}
+
+/* ═══════════════════════════════
    PAGE A5 (148 × 210 mm)
 ═══════════════════════════════ */
 .page{
@@ -500,11 +514,27 @@ async function load(){
     document.getElementById('pages').innerHTML = pages.join('');
     document.getElementById('loading').style.display = 'none';
     document.getElementById('toolbar-info').textContent = `${pages.length} pages · Format A5`;
+    applyMobileScale();
 
   }catch(e){
     document.getElementById('loading').innerHTML = '<div style="color:#8A7355;font-family:Cinzel,serif;font-size:11px;letter-spacing:0.2em;text-align:center">ERREUR DE CHARGEMENT</div>';
   }
 }
+
+function applyMobileScale(){
+  if(window.innerWidth > 620) return;
+  const mmToPx = 96 / 25.4;
+  const pageW = 148 * mmToPx; // ≈ 559px
+  const pageH = 210 * mmToPx; // ≈ 793px
+  const avail = window.innerWidth - 16;
+  const scale = avail / pageW;
+  document.querySelectorAll('.page').forEach(p => {
+    p.style.transform = `scale(${scale})`;
+    p.style.marginBottom = `-${pageH * (1 - scale)}px`;
+  });
+  document.getElementById('pages').style.gap = `${8 * scale}px`;
+}
+window.addEventListener('resize', applyMobileScale);
 
 function toggleTheme(){
   const html=document.documentElement;
