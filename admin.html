@@ -326,6 +326,24 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text)}
   <div class="pg" id="pg-settings">
     <div class="pg-head"><div><div class="pg-title">Paramètres</div></div></div>
     <div class="settings-card">
+      <div class="settings-title">Infos du bar</div>
+      <div class="field"><label>Ouverture</label>
+        <input class="inp" id="info-open" placeholder="ex: 17h" oninput="saveInfo()">
+      </div>
+      <div class="field"><label>Fermeture</label>
+        <input class="inp" id="info-close" placeholder="ex: 1h du matin" oninput="saveInfo()">
+      </div>
+      <div class="field"><label>Jours de fermeture</label>
+        <input class="inp inp-wide" id="info-closed-days" placeholder="ex: Dimanche &amp; Lundi" oninput="saveInfo()">
+      </div>
+      <div class="field"><label>Téléphone</label>
+        <input class="inp" id="info-phone" placeholder="ex: 07 86 84 66 93" oninput="saveInfo()">
+      </div>
+      <div class="field"><label>E-mail</label>
+        <input class="inp inp-wide" id="info-email" placeholder="ex: lechalet-63000@gmail.com" oninput="saveInfo()">
+      </div>
+    </div>
+    <div class="settings-card">
       <div class="settings-title">Mot de passe admin</div>
       <div class="field"><label>Modifier le mot de passe</label>
         <div class="field-row">
@@ -829,6 +847,25 @@ function buildFormuleCard(cat) {
   body.appendChild(makeAddRow(ni, di, np, ab)); return card;
 }
 
+// ══ INFOS DU BAR ══
+function loadInfoFields() {
+  const info = D.info || {};
+  document.getElementById('info-open').value = info.hours_open || '';
+  document.getElementById('info-close').value = info.hours_close || '';
+  document.getElementById('info-closed-days').value = info.closed_days || '';
+  document.getElementById('info-phone').value = info.phone || '';
+  document.getElementById('info-email').value = info.email || '';
+}
+function saveInfo() {
+  if (!D.info) D.info = {};
+  D.info.hours_open = document.getElementById('info-open').value.trim();
+  D.info.hours_close = document.getElementById('info-close').value.trim();
+  D.info.closed_days = document.getElementById('info-closed-days').value.trim();
+  D.info.phone = document.getElementById('info-phone').value.trim();
+  D.info.email = document.getElementById('info-email').value.trim();
+  scheduleSave('Infos du bar mises à jour');
+}
+
 // ══ SETTINGS ══
 async function changePwd() {
   const old = document.getElementById('old-pwd').value;
@@ -868,7 +905,7 @@ function closeSidebar() {
 
 // ══ INIT ══
 function initAll() {
-  renderDashboard(); renderNavCats(); renderCatManage();
+  renderDashboard(); renderNavCats(); renderCatManage(); loadInfoFields();
 }
 </script>
 </body>

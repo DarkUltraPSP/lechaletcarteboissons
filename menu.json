@@ -1,4 +1,11 @@
 {
+  "info": {
+    "hours_open": "17h",
+    "hours_close": "1h du matin",
+    "closed_days": "Dimanche & Lundi",
+    "phone": "07 86 84 66 93",
+    "email": "lechalet-63000@gmail.com"
+  },
   "categories": [
     {
       "id": "fraiches",
