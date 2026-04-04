@@ -25,7 +25,7 @@ function validateMenuData(data) {
   for (const cat of data.categories) {
     if (typeof cat.id !== 'string' || !cat.id) return 'categorie.id invalide';
     if (typeof cat.label !== 'string') return 'categorie.label invalide';
-    if (!['simple', 'double_prix'].includes(cat.type)) return `categorie.type invalide: ${cat.type}`;
+    if (!['simple', 'double_prix', 'formule'].includes(cat.type)) return `categorie.type invalide: ${cat.type}`;
     if (typeof cat.active !== 'boolean') return 'categorie.active invalide';
     if (cat.type === 'double_prix') {
       if (!Array.isArray(cat.items)) return `categorie "${cat.id}": items manquant`;
@@ -36,8 +36,7 @@ function validateMenuData(data) {
         if (item.price1 !== null && item.price1 !== undefined && typeof item.price1 !== 'number') return 'item.price1 invalide';
         if (item.price2 !== null && item.price2 !== undefined && typeof item.price2 !== 'number') return 'item.price2 invalide';
       }
-    } else {
-      if (!Array.isArray(cat.subsections)) return `categorie "${cat.id}": subsections manquant`;
+    } else if (Array.isArray(cat.subsections)) {
       for (const sub of cat.subsections) {
         if (typeof sub.id !== 'string' || !sub.id) return 'subsection.id invalide';
         if (typeof sub.label !== 'string') return 'subsection.label invalide';
@@ -49,6 +48,15 @@ function validateMenuData(data) {
           if (item.price !== undefined && item.price !== null && typeof item.price !== 'number') return 'item.price invalide';
         }
       }
+    } else if (Array.isArray(cat.items)) {
+      for (const item of cat.items) {
+        if (typeof item.id !== 'string' || !item.id) return 'item.id invalide';
+        if (typeof item.name !== 'string') return 'item.name invalide';
+        if (typeof item.active !== 'boolean') return 'item.active invalide';
+        if (item.price !== undefined && item.price !== null && typeof item.price !== 'number') return 'item.price invalide';
+      }
+    } else {
+      return `categorie "${cat.id}": items ou subsections manquant`;
     }
   }
   return null;
