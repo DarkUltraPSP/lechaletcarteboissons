@@ -121,11 +121,11 @@ body{
 }
 
 /* ═══════════════════════════════
-   PAGE A5 (148 × 210 mm)
+   PAGE B5 (176 × 250 mm)
 ═══════════════════════════════ */
 .page{
-  width:148mm;
-  min-height:210mm;
+  width:176mm;
+  min-height:250mm;
   background:var(--dark2);
   position:relative;
   overflow:hidden;
@@ -150,7 +150,7 @@ body{
 
 .page-inner{
   padding:10mm 9mm 8mm;
-  min-height:210mm;
+  min-height:250mm;
   display:flex;
   flex-direction:column;
   background-image:
@@ -271,21 +271,23 @@ body{
   #pages{padding:0;gap:0}
   #loading{display:none}
   .page{
-    width:148mm;min-height:210mm;
+    width:176mm;min-height:250mm;
     box-shadow:none;
     page-break-after:always;
     break-after:page;
   }
   .page:last-child{page-break-after:avoid;break-after:avoid}
-  @page{size:A5 portrait;margin:0}
+  @page{size:B5 portrait;margin:0}
 }
 </style>
+<style id="fmt-style"></style>
 </head>
 <body>
 
 <div id="toolbar">
   <div id="toolbar-title">Le Chalet Bar — Carte à imprimer</div>
   <div id="toolbar-info"></div>
+  <select id="fmt-select" onchange="setFormat(this.value)" style="font-family:'Cinzel',serif;font-size:11px;padding:6px 10px;background:#2a2a2a;color:var(--gold);border:1px solid #444;border-radius:6px;cursor:pointer;letter-spacing:0.05em"></select>
   <button class="btn-theme" id="theme-toggle" onclick="toggleTheme()" title="Changer de thème">🌙</button>
   <button class="btn-close" onclick="window.close()">✕ Fermer</button>
   <button class="btn-print" onclick="window.print()">🖨 Imprimer</button>
@@ -383,7 +385,16 @@ const CAT_HEIGHTS = {
   hr: 7,        // séparateur
   col_header: 6,
 };
-const PAGE_HEIGHT = 160; // mm disponibles par page (hors couverture et footer)
+const FORMATS = {
+  A4: { label:'A4 (210×297 mm)', w:210, h:297, pageH:248 },
+  B5: { label:'B5 (176×250 mm)', w:176, h:250, pageH:200 },
+  A5: { label:'A5 (148×210 mm)', w:148, h:210, pageH:160 },
+  A6: { label:'A6 (105×148 mm)', w:105, h:148, pageH:100 },
+};
+let currentFmt = localStorage.getItem('chalet_fmt') || 'B5';
+let menuData = null;
+
+function PAGE_HEIGHT(){ return FORMATS[currentFmt].pageH; }
 const FOOTER_H = 14;
 
 function estimateHeight(cat){
@@ -407,11 +418,17 @@ function estimateHeight(cat){
   return h;
 }
 
-async function load(){
-  try{
-    const res = await fetch(RAW+'?t='+Date.now());
-    if(!res.ok) throw new Error();
-    const D = await res.json();
+function applyFormatStyle(){
+  const f = FORMATS[currentFmt];
+  document.getElementById('fmt-style').textContent =
+    `.page{width:${f.w}mm;min-height:${f.h}mm}` +
+    `.page-inner{min-height:${f.h}mm}` +
+    `@media print{.page{width:${f.w}mm;min-height:${f.h}mm}@page{size:${f.w}mm ${f.h}mm;margin:0}}`;
+}
+
+function render(){
+  if(!menuData) return;
+  const D = menuData;
     const cats = (D.categories||[]).filter(c=>c.active);
     const pages = [];
 
@@ -482,7 +499,7 @@ async function load(){
       const catH = estimateHeight(cat) + (firstOnPage ? 0 : CAT_HEIGHTS.hr);
 
       // Si la catégorie ne rentre pas dans la page courante → nouvelle page
-      if(!firstOnPage && currentH + catH > PAGE_HEIGHT){
+      if(!firstOnPage && currentH + catH > PAGE_HEIGHT()){
         flushPage();
       }
 
@@ -511,21 +528,38 @@ async function load(){
       </div>
     `));
 
-    document.getElementById('pages').innerHTML = pages.join('');
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('toolbar-info').textContent = `${pages.length} pages · Format A5`;
-    applyMobileScale();
+  document.getElementById('pages').innerHTML = pages.join('');
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('toolbar-info').textContent = `${pages.length} pages · ${FORMATS[currentFmt].label}`;
+  applyMobileScale();
+}
 
+async function load(){
+  try{
+    const res = await fetch(RAW+'?t='+Date.now());
+    if(!res.ok) throw new Error();
+    menuData = await res.json();
+    applyFormatStyle();
+    render();
   }catch(e){
     document.getElementById('loading').innerHTML = '<div style="color:#8A7355;font-family:Cinzel,serif;font-size:11px;letter-spacing:0.2em;text-align:center">ERREUR DE CHARGEMENT</div>';
   }
 }
 
+function setFormat(fmt){
+  currentFmt = fmt;
+  localStorage.setItem('chalet_fmt', fmt);
+  applyFormatStyle();
+  render();
+  applyMobileScale();
+}
+
 function applyMobileScale(){
   if(window.innerWidth > 620) return;
+  const f = FORMATS[currentFmt];
   const mmToPx = 96 / 25.4;
-  const pageW = 148 * mmToPx; // ≈ 559px
-  const pageH = 210 * mmToPx; // ≈ 793px
+  const pageW = f.w * mmToPx;
+  const pageH = f.h * mmToPx;
   const avail = window.innerWidth - 16;
   const scale = avail / pageW;
   document.querySelectorAll('.page').forEach(p => {
@@ -547,6 +581,13 @@ function toggleTheme(){
   const t=localStorage.getItem('chalet_theme')||'dark';
   document.documentElement.dataset.theme=t;
   document.getElementById('theme-toggle').textContent=t==='dark'?'🌙':'☀️';
+  const sel=document.getElementById('fmt-select');
+  Object.entries(FORMATS).forEach(([k,f])=>{
+    const o=document.createElement('option');
+    o.value=k; o.textContent=f.label;
+    if(k===currentFmt) o.selected=true;
+    sel.appendChild(o);
+  });
 })();
 load();
 </script>
